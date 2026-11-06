@@ -363,8 +363,8 @@ html.deck .reduce [data-step] { transition: none; }
 .b-sign rect { fill: var(--green); }
 .b-sign .b-inner { fill: none; stroke: var(--white); stroke-width: 2.5; }
 .b-post { stroke: #5b666c; stroke-width: 5; }
-.b-l { fill: var(--green-ink); font: 800 13px var(--f-sans); text-anchor: middle; letter-spacing: 0.04em; }
-.b-v { fill: var(--white); font: 900 30px var(--f-sans); text-anchor: middle; }
+.b-l { fill: var(--green-ink); font: 800 11.5px var(--f-sans); text-anchor: middle; }
+.b-v { fill: var(--white); font: 900 29px var(--f-sans); text-anchor: middle; }
 .b-sign.is-last rect:first-of-type { fill: var(--green); }
 .b-sign.is-last .b-inner { stroke: var(--yellow); stroke-width: 3.5; }
 .b-gantry line { stroke: #5b666c; stroke-width: 7; }

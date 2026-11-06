@@ -293,13 +293,13 @@ function bridgeSvg(steps) {
     const x0 = L + i * seg, x1 = x0 + seg, y = Y(s.v);
     if (i) road += ` L ${x0} ${y}`;
     road += ` L ${x1} ${y}`;
-    const sx = x0 + seg * 0.5 - 78;
+    const sx = x0 + seg * 0.5 - 65;
     signs += `<g class="b-sign" data-bstep="${i}" ${i ? `data-step="${i}"` : ''}>
       <line class="b-post" x1="${x0 + seg * 0.5}" x2="${x0 + seg * 0.5}" y1="${y - 64}" y2="${y - 6}"/>
-      <rect x="${sx}" y="${y - 132}" width="156" height="72" rx="9"/>
-      <rect class="b-inner" x="${sx + 4}" y="${y - 128}" width="148" height="64" rx="6"/>
-      <text class="b-l" x="${sx + 78}" y="${y - 106}">${s.label.toUpperCase()}</text>
-      <text class="b-v" x="${sx + 78}" y="${y - 74}">${pct(s.v)}</text>
+      <rect x="${sx}" y="${y - 132}" width="130" height="72" rx="9"/>
+      <rect class="b-inner" x="${sx + 4}" y="${y - 128}" width="122" height="64" rx="6"/>
+      <text class="b-l" x="${sx + 65}" y="${y - 106}">${s.label.toUpperCase()}</text>
+      <text class="b-v" x="${sx + 65}" y="${y - 74}">${pct(s.v)}</text>
     </g>`;
   });
   const end = L + steps.length * seg;

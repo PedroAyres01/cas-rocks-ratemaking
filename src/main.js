@@ -38,6 +38,7 @@ sections.forEach((sec) => [...sec.firstElementChild.firstElementChild.children].
   el.style.setProperty('--d', el.dataset.depth);
 }));
 
+const allLayers = [...track.querySelectorAll('[data-depth]')];
 const trails = createTrails(document.querySelector('.trails'));
 const LAST = sections.length - 1;
 
@@ -115,15 +116,17 @@ function go(target, { reveal = 'none', instant = false } = {}) {
 
   const xp = -(cur / sections.length) * 100;
   if (busy) busy.kill();
+  gsap.set(allLayers, { '--tx': '0px' });
   if (instant || reduced || from === cur) {
     gsap.set(track, { xPercent: xp });
+    trails.flow = 1;
     return;
   }
   // o momento autoral: a viagem. A pista corre, a estação seguinte chega da direita.
   const dir = Math.sign(cur - from);
   const hops = Math.abs(cur - from);
   const dur = Math.min(0.95 + 0.12 * (hops - 1), 1.5);
-  const signs = sections[cur].querySelectorAll('.sign, .vms, .exit-tab, .eq-res, .diamond, .stack-bar');
+  const signs = [...sections[cur].querySelectorAll('.sign, .vms, .exit-tab, .eq-res, .diamond, .stack-bar')].filter((el) => !el.hasAttribute('data-depth'));
   const vw = innerWidth * 0.32;
   const layersIn = [...sections[cur].querySelectorAll('[data-depth]')];
   const layersOut = [...sections[from].querySelectorAll('[data-depth]')];
@@ -278,7 +281,7 @@ if (deck) {
   const n = parseHash();
   go(n ?? 0, { reveal: n ? 'all' : 'none', instant: true });
   if (!reduced) {
-    gsap.fromTo('.hero-sign, .hero-side', { scale: 0.88, y: '2rem', opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: 1.3, ease: 'expo.out', stagger: 0.18, delay: 0.15, clearProps: 'transform,opacity' });
+    gsap.fromTo('.hero-sign, .hero-side', { '--tx': (i) => `${(i + 1) * 9}rem`, opacity: 0 }, { '--tx': '0rem', opacity: 1, duration: 1.4, ease: 'expo.out', stagger: 0.16, delay: 0.15, clearProps: 'opacity' });
     gsap.from(dash, { backgroundPositionX: `${innerWidth}px`, duration: 1.6, ease: 'expo.out' });
   }
 } else {
