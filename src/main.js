@@ -10,7 +10,7 @@ import { STATIONS, SIM_CONTROLS, SIM_PRESETS, bridgeSteps, fin } from './station
 import { run, FINAL } from './engine.js';
 import { LedBoard } from './led.js';
 import { createTrails } from './trails.js';
-import { pct, num, usd } from './fmt.js';
+import { pct, usd } from './fmt.js';
 
 const root = document.documentElement;
 gsap.config({ nullTargetWarn: false });
@@ -51,8 +51,10 @@ const ledBridge = new LedBoard(document.getElementById('led-bridge'), { cols: 7,
 ledBridge.set(pct(steps[0].v), { instant: true });
 
 const ledSim = new LedBoard(document.getElementById('led-sim'), { cols: 18, lines: 2 });
-const simText = (o) => [`REAJUSTE ${pct(o.cw)}`, `PREMIO US$ ${num(o.avgPremNew, 2)}`];
-ledSim.set(simText(fin), { instant: true });
+// linha 2 do painel: faixa de robustez ao vivo (severidade projetada ±0,5 p.p.)
+const band = (p) => [-0.005, 0.005].map((d) => run({ ...p, sev: [p.sev[0], p.sev[1] + d] }).cw).sort((a, b) => a - b);
+const simText = (o, p) => { const [lo, hi] = band(p); return [`REAJUSTE ${pct(o.cw)}`, `${pct(lo, 1, { sign: true })} A ${pct(hi, 1, { sign: true })}`]; };
+ledSim.set(simText(fin, FINAL), { instant: true });
 
 // ---------- fragmentos (passos dentro de uma estação) ----------
 const stepGroups = sections.map((sec) => {
@@ -137,6 +139,7 @@ function go(target, { reveal = 'none', instant = false } = {}) {
     .to(trails, { flow: dir * 9, duration: dur * 0.45, ease: 'power2.in' }, 0)
     .to(trails, { flow: 1, duration: dur * 1.1, ease: 'power3.out' }, dur * 0.45)
     .to(dash, { backgroundPositionX: `${dir > 0 ? '-=' : '+='}${innerWidth * 0.9 * Math.min(hops, 3)}px`, duration: dur, ease: 'expo.inOut' }, 0)
+    .fromTo(sections[cur].querySelectorAll('.sign'), { '--sweep': '-90%', '--glint': 0.9 }, { '--sweep': '90%', '--glint': 0, duration: 1.2, ease: 'power2.inOut', stagger: 0.06, clearProps: '--sweep,--glint' }, dur * 0.55)
     .fromTo(signs, { scale: 0.9, y: '1.2rem', opacity: 0.35 }, { scale: 1, y: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.05, clearProps: 'transform,opacity' }, dur * 0.42);
 }
 
@@ -209,6 +212,7 @@ const signOut = {
   z: [document.getElementById('o-z'), (o) => o.Z, (v) => pct(v, 0)],
 };
 const oPrem = document.getElementById('o-prem');
+const premV = document.getElementById('o-prem-v');
 const presetBtns = [...document.querySelectorAll('.preset')];
 let ledTimer;
 
@@ -227,7 +231,8 @@ function simRender() {
   }
   oPrem.textContent = `Reajuste ${pct(o.cw)}; prêmio médio por veículo de ${usd(o.avgPremProj)} para ${usd(o.avgPremNew)}`;
   clearTimeout(ledTimer);
-  ledTimer = setTimeout(() => ledSim.set(simText(o)), 50);
+  premV.textContent = `${usd(o.avgPremProj)} → ${usd(o.avgPremNew)}`;
+  ledTimer = setTimeout(() => ledSim.set(simText(o, simP)), 50);
 }
 
 function syncControls() {
@@ -283,6 +288,7 @@ if (deck) {
   if (!reduced) {
     gsap.fromTo('.hero-sign, .hero-side', { '--tx': (i) => `${(i + 1) * 9}rem`, opacity: 0 }, { '--tx': '0rem', opacity: 1, duration: 1.4, ease: 'expo.out', stagger: 0.16, delay: 0.15, clearProps: 'opacity' });
     gsap.from(dash, { backgroundPositionX: `${innerWidth}px`, duration: 1.6, ease: 'expo.out' });
+    gsap.fromTo('.hero-sign', { '--sweep': '-90%', '--glint': 1 }, { '--sweep': '90%', '--glint': 0, duration: 1.4, ease: 'power2.inOut', delay: 0.9, clearProps: '--sweep,--glint' });
   }
 } else {
   const n = parseHash();

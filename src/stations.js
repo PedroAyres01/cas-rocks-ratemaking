@@ -31,6 +31,8 @@ const cap = (t) => `<p class="cap"><span>${t}</span></p>`;
 const sign = (legend, value, extra = '', cls = '') =>
   `<div class="sign ${cls}"><span class="sign-legend">${legend}</span><strong class="sign-value">${value}</strong>${extra}</div>`;
 
+const ARROW = (x, y, s = 14) => `<path class="b-arr" d="M${x} ${y + s} L${x + s} ${y} M${x + s * 0.3} ${y} H${x + s} V${y + s * 0.7}"/>`;
+
 // ---------- KM 0 ----------
 function km0() {
   return `
@@ -40,7 +42,7 @@ function km0() {
       <span class="sign-legend">Reajuste indicado</span>
       <strong class="hero-value" data-num>${pct(fin.cw)}</strong>
       <span class="hero-rule"><span>LR Indication · L24</span></span>
-      <span class="hero-sub">Prêmio médio por veículo</span>
+      <span class="hero-sub">Prêmio médio por veículo-ano</span>
       <span class="hero-prem">${usd(fin.avgPremProj)} <i aria-hidden="true">→</i> ${usd(fin.avgPremNew)}</span>
     </div>
     <div class="hero-side" data-enter="approach-late">
@@ -80,7 +82,7 @@ function km1() {
 
 // ---------- KM 2: paralelogramo ----------
 function parallelogram() {
-  const X0 = 2010, X1 = 2017.2, W = 1200, H = 300, L = 40, R = 20, T = 56, B = 40;
+  const X0 = 2010, X1 = 2017.2, W = 1200, H = 320, L = 40, R = 20, T = 84, B = 44;
   const x = (y) => L + ((y - X0) / (X1 - X0)) * (W - L - R);
   const dates = caso.rateDates.map((d) => { const [y, m] = d.split('-').map(Number); return y + (m - 1) / 12; });
   const orig = BASE.rate_changes, cor = FINAL.rate_changes;
@@ -95,8 +97,8 @@ function parallelogram() {
     const near = (j) => j >= 0 && j < dates.length && Math.abs(dates[j] - d) < 0.5;
     const anc = near(i + 1) ? 'end' : near(i - 1) ? 'start' : 'middle';
     const lx = x(d) + (anc === 'end' ? -6 : anc === 'start' ? 6 : 0);
-    s += `<text class="para-rc ${changed ? 'is-changed' : ''}" text-anchor="${anc}" x="${lx}" y="${T - 30}">${pct(cor[i], 0, { sign: true })}</text>`;
-    if (changed) s += `<text class="para-old" text-anchor="${anc}" x="${lx}" y="${T - 8}">era ${pct(orig[i], 0, { sign: true })}</text>`;
+    s += `<text class="para-rc ${changed ? 'is-changed' : ''}" text-anchor="${anc}" x="${lx}" y="${T - 44}">${pct(cor[i], 0, { sign: true })}</text>`;
+    if (changed) s += `<text class="para-old" text-anchor="${anc}" x="${lx}" y="${T - 12}">era ${pct(orig[i], 0, { sign: true })}</text>`;
   });
   s += `<line class="para-base" x1="${L}" y1="${H - B}" x2="${W - R}" y2="${H - B}"/></svg>`;
   return s;
@@ -151,6 +153,11 @@ function km3() {
       ${cap('Premium Trend − 1 · H39')}
     </div>
     <div class="chart-wrap">${premFitsChart()}</div>
+    <table class="pf-table">
+      <caption class="sr-only">Tendência anual do prêmio médio por ajuste</caption>
+      <thead><tr><th scope="col">Ajuste</th><th scope="col">Antes</th><th scope="col">Corrigido</th></tr></thead>
+      <tbody>${['20', '16', '12', '8', '6', '4'].map((n) => `<tr><th scope="row">${n} pontos</th><td>${pct(base.premFits[n], 2)}</td><td>${pct(fin.premFits[n], 2)}</td></tr>`).join('')}</tbody>
+    </table>
   </div>`;
 }
 
@@ -173,7 +180,7 @@ function km4() {
     <div class="tri-wrap">
       <table class="tri">
         <caption class="sr-only">Fatores idade a idade, anos de ocorrência 2009 a 2014</caption>
-        <thead><tr><th scope="col">Ocorrência</th>${ages.map((a) => `<th scope="col">${a}</th>`).join('')}</tr></thead>
+        <thead><tr><th scope="col">Ano</th>${ages.map((a) => `<th scope="col">${a}</th>`).join('')}</tr></thead>
         <tbody>${rows.map((r) => `<tr><th scope="row">${r.ay}</th>${r.f.map(cell).join('')}</tr>`).join('')}</tbody>
         <tfoot>
           <tr class="t-sel" data-step="1"><th scope="row">Seleção</th>${FINAL.ldf_sel.slice(0, 4).map((v, j) => `<td class="${v < 1 ? 't-down' : ''}">${fac(v)}</td>`).join('')}</tr>
@@ -186,10 +193,10 @@ function km4() {
 }
 
 // ---------- KM 5: frequência × severidade ----------
-function series(vals, { w = 560, h = 230, fmtY, label, hot = 6 }) {
+function series(vals, { w = 560, h = 260, fmtY, label, hot = 6 }) {
   const min = Math.min(...vals), max = Math.max(...vals), pad = (max - min) * 0.18;
   const X = (i) => 30 + (i / (vals.length - 1)) * (w - 60);
-  const Y = (v) => h - 34 - ((v - (min - pad)) / (max - min + 2 * pad)) * (h - 70);
+  const Y = (v) => h - 70 - ((v - (min - pad)) / (max - min + 2 * pad)) * (h - 120);
   const pts = vals.map((v, i) => `${X(i)},${Y(v)}`).join(' ');
   let s = `<svg class="series" viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}"><polyline class="s-line" points="${pts}"/>`;
   vals.forEach((v, i) => { s += `<circle class="${i >= vals.length - hot ? 's-hot' : 's-dot'}" cx="${X(i)}" cy="${Y(v)}" r="5"/>`; });
@@ -283,7 +290,7 @@ function km7() {
 
 // ---------- KM 8: ponte ----------
 function bridgeSvg(steps) {
-  const W = 1300, H = 520, L = 30, R = 290, top = 150, bot = 480;
+  const W = 1300, H = 520, L = 30, R = 230, top = 175, bot = 480;
   const vmin = -0.07, vmax = 0;
   const Y = (v) => bot - ((v - vmin) / (vmax - vmin)) * (bot - top);
   const seg = (W - L - R) / steps.length;
@@ -293,13 +300,17 @@ function bridgeSvg(steps) {
     const x0 = L + i * seg, x1 = x0 + seg, y = Y(s.v);
     if (i) road += ` L ${x0} ${y}`;
     road += ` L ${x1} ${y}`;
-    const sx = x0 + seg * 0.5 - 65;
+    const sw = seg - 8, sx = x0 + seg * 0.5 - sw / 2, cxs = sx + sw / 2;
+    const words = s.label.toUpperCase().replace('DESENVOLVIMENTO', 'DESENVOLV.').split(' ');
+    const lines = words.length > 2 ? [words.slice(0, 2).join(' '), words.slice(2).join(' ')] : words.length === 2 && s.label.length > 10 ? words : [words.join(' ')];
+    const ly = lines.length === 2 ? [y - 136, y - 116] : [y - 124];
     signs += `<g class="b-sign" data-bstep="${i}" ${i ? `data-step="${i}"` : ''}>
-      <line class="b-post" x1="${x0 + seg * 0.5}" x2="${x0 + seg * 0.5}" y1="${y - 64}" y2="${y - 6}"/>
-      <rect x="${sx}" y="${y - 132}" width="130" height="72" rx="9"/>
-      <rect class="b-inner" x="${sx + 4}" y="${y - 128}" width="122" height="64" rx="6"/>
-      <text class="b-l" x="${sx + 65}" y="${y - 106}">${s.label.toUpperCase()}</text>
-      <text class="b-v" x="${sx + 65}" y="${y - 74}">${pct(s.v)}</text>
+      <line class="b-post" x1="${cxs}" x2="${cxs}" y1="${y - 56}" y2="${y - 6}"/>
+      <rect x="${sx}" y="${y - 160}" width="${sw}" height="104" rx="10"/>
+      <rect class="b-inner" x="${sx + 4}" y="${y - 156}" width="${sw - 8}" height="96" rx="7"/>
+      ${ARROW(sx + sw - 24, y - 150, 11)}
+      <text class="b-l" x="${cxs}">${lines.map((t, k) => `<tspan x="${cxs}" y="${ly[k]}">${t}</tspan>`).join('')}</text>
+      <text class="b-v" x="${cxs}" y="${y - 74}">${pct(s.v)}</text>
     </g>`;
   });
   const end = L + steps.length * seg;
@@ -321,7 +332,7 @@ function km8() {
       <p>Cada correção do Guia é uma saída na estrada. A base reproduz exatamente o slide do professor.</p>
     </div>
     <div class="bridge-wrap">${bridgeSvg(steps)}<div class="vms vms-bridge"><canvas id="led-bridge"></canvas></div></div>
-    <ol class="sr-only">${steps.map((s) => `<li>${s.label}: ${pct(s.v)}</li>`).join('')}</ol>
+    <ol class="bridge-list">${steps.map((s, i) => `<li class="${i === steps.length - 1 ? 'is-last' : ''}"><span>${s.label}</span><b>${pct(s.v)}</b><small>${s.note}</small></li>`).join('')}</ol>
   </div>`;
 }
 
@@ -364,6 +375,7 @@ function km9() {
     </div>
     <div class="presets" role="group" aria-label="Cenários prontos">
       ${SIM_PRESETS.map((s, i) => `<button type="button" class="preset ${i === 0 ? 'is-on' : ''}" data-preset="${s.id}">${s.label}</button>`).join('')}
+      <p class="sim-prem" aria-hidden="true">Prêmio por veículo-ano <b id="o-prem-v">${usd(fin.avgPremProj)} → ${usd(fin.avgPremNew)}</b></p>
     </div>
   </div>`;
 }
@@ -387,7 +399,7 @@ function km10() {
       <div class="stack-bar" aria-hidden="true">${parts.map(([k, , v], i) => `<span class="seg seg-${k}" data-step="${i + 1}" style="flex-basis:${(v / tot) * 100}%"></span>`).join('')}</div>
       <ul class="stack-legend">${parts.map(([k, t, v], i) => `<li class="leg-${k}" data-step="${i + 1}"><b>${usd(v)}</b><span>${t}</span><i>${pct(v / tot, 0)} do prêmio</i></li>`).join('')}</ul>
     </div>
-    <p class="assume">Premissa: a exposição do caso é contada em veículo-ano. O caso não define a unidade; confirmamos com o professor antes de usar este valor como preço.</p>
+    <p class="assume">Premissa: a exposição é contada em veículo-ano, a unidade usual do seguro auto. O caso não define a unidade explicitamente; a confirmar com o professor antes de tratar este valor como preço.</p>
   </div>`;
 }
 
