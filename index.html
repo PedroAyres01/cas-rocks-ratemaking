@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>CAS Rocks · Reajuste 2017</title>
+  <meta name="description" content="Indicação de taxa para 2017 do seguro auto de danos materiais da CAS Rocks Insurance: estudo de caso de tarifação, EAC0465 FEA-USP.">
+  <meta name="theme-color" content="#111417">
+  <meta property="og:title" content="CAS Rocks · Reajuste 2017">
+  <meta property="og:description" content="Do −6,2% ao −0,5%: a tarifação do seguro auto contada como uma rodovia. Estudo de caso EAC0465, FEA-USP.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='10' width='56' height='44' rx='8' fill='%230b6b3f'/%3E%3Crect x='8' y='14' width='48' height='36' rx='5' fill='none' stroke='%23f2f4f1' stroke-width='3'/%3E%3Cpath d='M20 32h24' stroke='%23f2f4f1' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+</head>
+<body>
+  <a class="skip" href="#road">Ir para o conteúdo</a>
+  <header class="chrome">
+    <a class="shield" href="#km-0" data-go="0" aria-label="Início: EAC0465, FEA-USP">EAC0465 · FEA-USP</a>
+    <nav class="exits" aria-label="Saídas do caso">
+      <a href="#km-2" data-go="2" data-exit="1"><span>Saída 1</span>Prêmio</a>
+      <a href="#km-4" data-go="4" data-exit="2"><span>Saída 2</span>Sinistros</a>
+      <a href="#km-5" data-go="5" data-exit="3"><span>Saída 3</span>Tendências</a>
+      <a href="#km-6" data-go="6" data-exit="4"><span>Saída 4</span>Despesas</a>
+      <a href="#km-7" data-go="7" data-exit="5"><span>Saída 5</span>Indicação</a>
+    </nav>
+  </header>
+
+  <div class="trails" aria-hidden="true"><canvas class="tr-bloom"></canvas><canvas class="tr-main"></canvas><div class="tr-vignette"></div></div>
+
+  <main id="road" class="road" tabindex="-1">
+    <div class="track"></div>
+  </main>
+
+  <div class="lanes" aria-hidden="true"><span class="lane-solid"></span><span class="lane-dash"></span></div>
+
+  <div class="kmpost" aria-hidden="true"><span>KM</span><b id="km-n">0</b><small>/12</small></div>
+  <p class="sr-only" id="km-live" aria-live="polite"></p>
+
+  <div class="drive" role="group" aria-label="Navegação">
+    <button type="button" class="drive-btn" data-dir="-1" aria-label="Voltar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <span class="drive-steps" aria-hidden="true"></span>
+    <button type="button" class="drive-btn" data-dir="1" aria-label="Avançar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
