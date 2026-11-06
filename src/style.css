@@ -501,8 +501,8 @@ input[type='range']:focus-visible { outline: 0.18rem solid var(--yellow); outlin
   .pf-table td:last-child { color: var(--amber); font-weight: 800; }
   .tri { font-size: 0.86rem; }
   .tri th, .tri td { padding: 0.45rem 0.2rem; }
-  .gantry .sign-cap { font-size: 0.72rem; }
-  .tri thead th { font-size: 0.7rem; }
+  .gantry .sign-cap { font-size: 0.8rem; }
+  .tri thead th { font-size: 0.8rem; }
   .sim-prem { margin-left: 0; width: 100%; }
   .vms-bridge { position: static; width: 100%; height: 5rem; margin-top: 1rem; }
   .gantry { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding: 0; }

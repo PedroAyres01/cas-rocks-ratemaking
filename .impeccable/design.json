@@ -1,0 +1,596 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T20:17:08+00:00",
+  "title": "Design System: CAS Rocks · Reajuste 2017",
+  "extensions": {
+    "colorMeta": {
+      "asphalt": {
+        "role": "neutral",
+        "displayName": "Asfalto",
+        "canonical": "#111417",
+        "oklch": "oklch(18.9% 0.008 248)",
+        "tonalRamp": [
+          "#090b0e",
+          "#212428",
+          "#3d4044",
+          "#5a5e62",
+          "#7a7e82",
+          "#9b9fa3",
+          "#c0c5c9",
+          "#ebeff4"
+        ]
+      },
+      "asphalt-2": {
+        "role": "neutral",
+        "displayName": "Asfalto 2",
+        "canonical": "#171b1f",
+        "oklch": "oklch(22.0% 0.010 248)",
+        "tonalRamp": [
+          "#080c0f",
+          "#202529",
+          "#3c4045",
+          "#595e63",
+          "#797e83",
+          "#9a9fa4",
+          "#bfc5ca",
+          "#e9eff5"
+        ]
+      },
+      "asphalt-3": {
+        "role": "neutral",
+        "displayName": "Asfalto 3",
+        "canonical": "#20262b",
+        "oklch": "oklch(26.5% 0.013 243)",
+        "tonalRamp": [
+          "#070c10",
+          "#1f252a",
+          "#3a4146",
+          "#585f64",
+          "#777e84",
+          "#989fa6",
+          "#bdc5cc",
+          "#e8f0f7"
+        ]
+      },
+      "asphalt-4": {
+        "role": "neutral",
+        "displayName": "Asfalto 4",
+        "canonical": "#2c343a",
+        "oklch": "oklch(32.0% 0.015 240)",
+        "tonalRamp": [
+          "#060c11",
+          "#1d252b",
+          "#394147",
+          "#565f66",
+          "#757f86",
+          "#96a0a7",
+          "#bcc6cd",
+          "#e6f0f8"
+        ]
+      },
+      "green": {
+        "role": "primary",
+        "displayName": "Verde Placa Rodoviária",
+        "canonical": "#0b6b3f",
+        "oklch": "oklch(46.6% 0.109 156)",
+        "tonalRamp": [
+          "#010f06",
+          "#042c18",
+          "#034d2b",
+          "#136f43",
+          "#3d9062",
+          "#61b382",
+          "#87d9a7",
+          "#c8fedb"
+        ]
+      },
+      "green-ink": {
+        "role": "primary",
+        "displayName": "Branco Película",
+        "canonical": "#d9efe2",
+        "oklch": "oklch(93.2% 0.029 160)",
+        "tonalRamp": [
+          "#020f07",
+          "#17281f",
+          "#33453a",
+          "#506358",
+          "#6f8377",
+          "#90a498",
+          "#b5cabe",
+          "#dff5e8"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Branco Retrorrefletivo",
+        "canonical": "#f2f4f1",
+        "oklch": "oklch(96.5% 0.004 135)",
+        "tonalRamp": [
+          "#0a0c0a",
+          "#232422",
+          "#3f403e",
+          "#5c5e5c",
+          "#7c7e7b",
+          "#9d9f9c",
+          "#c3c5c2",
+          "#edefec"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Cinza Neblina",
+        "canonical": "#a9b2b6",
+        "oklch": "oklch(75.8% 0.012 226)",
+        "tonalRamp": [
+          "#060c0f",
+          "#1e2528",
+          "#3a4144",
+          "#575f63",
+          "#767f83",
+          "#97a0a4",
+          "#bdc6ca",
+          "#e7f0f5"
+        ]
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Cinza Distante",
+        "canonical": "#6e787d",
+        "oklch": "oklch(56.6% 0.014 229)",
+        "tonalRamp": [
+          "#050c10",
+          "#1d252a",
+          "#384146",
+          "#565f64",
+          "#757f84",
+          "#96a0a6",
+          "#bbc6cc",
+          "#e5f1f6"
+        ]
+      },
+      "amber": {
+        "role": "secondary",
+        "displayName": "Âmbar LED",
+        "canonical": "#ffb000",
+        "oklch": "oklch(81.2% 0.170 76)",
+        "tonalRamp": [
+          "#130900",
+          "#322001",
+          "#553a07",
+          "#7d5400",
+          "#a37320",
+          "#ce9120",
+          "#fcb53b",
+          "#feecd2"
+        ]
+      },
+      "amber-off": {
+        "role": "secondary",
+        "displayName": "LED Apagado",
+        "canonical": "#2b1f06",
+        "oklch": "oklch(24.8% 0.043 83)",
+        "tonalRamp": [
+          "#110a00",
+          "#2e2209",
+          "#4b3e25",
+          "#695c42",
+          "#8a7b60",
+          "#ab9d81",
+          "#d2c2a5",
+          "#fdedcf"
+        ]
+      },
+      "yellow": {
+        "role": "tertiary",
+        "displayName": "Amarelo Refletivo",
+        "canonical": "#f5c400",
+        "oklch": "oklch(84.0% 0.172 90)",
+        "tonalRamp": [
+          "#100a00",
+          "#2d2304",
+          "#4f3d03",
+          "#715b11",
+          "#977a19",
+          "#bf9a14",
+          "#eabf32",
+          "#feeec1"
+        ]
+      },
+      "lane": {
+        "role": "neutral",
+        "displayName": "Branco Faixa",
+        "canonical": "#e9ece8",
+        "oklch": "oklch(94.0% 0.006 138)",
+        "tonalRamp": [
+          "#0a0c09",
+          "#232522",
+          "#3e403d",
+          "#5c5e5b",
+          "#7b7e7b",
+          "#9c9f9c",
+          "#c2c5c1",
+          "#ecefeb"
+        ]
+      },
+      "vms-black": {
+        "role": "secondary",
+        "displayName": "Preto Painel",
+        "canonical": "#07090a",
+        "oklch": "oklch(13.8% 0.004 227)",
+        "tonalRamp": [
+          "#090c0d",
+          "#222426",
+          "#3d4042",
+          "#5b5e60",
+          "#7b7e7f",
+          "#9c9fa0",
+          "#c1c5c6",
+          "#ebeff1"
+        ]
+      },
+      "sign-ink": {
+        "role": "neutral",
+        "displayName": "Tinta de Poste",
+        "canonical": "#111111",
+        "oklch": "oklch(17.8% 0.000 90)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c4c4c4",
+          "#eeeeee"
+        ]
+      },
+      "series-green-2": {
+        "role": "neutral",
+        "displayName": "Série Verde Médio",
+        "canonical": "#2f8a5c",
+        "oklch": "oklch(56.7% 0.112 157)",
+        "tonalRamp": [
+          "#000f06",
+          "#022c18",
+          "#0a4c2e",
+          "#047044",
+          "#379163",
+          "#5cb383",
+          "#82daa8",
+          "#c6fedb"
+        ]
+      },
+      "series-green-3": {
+        "role": "neutral",
+        "displayName": "Série Verde Claro",
+        "canonical": "#5aa47c",
+        "oklch": "oklch(65.9% 0.096 159)",
+        "tonalRamp": [
+          "#000f06",
+          "#032c19",
+          "#0e4c30",
+          "#206e49",
+          "#448f68",
+          "#67b188",
+          "#8dd8ad",
+          "#c7fedd"
+        ]
+      },
+      "series-concrete": {
+        "role": "neutral",
+        "displayName": "Série Concreto",
+        "canonical": "#c9cfcc",
+        "oklch": "oklch(84.9% 0.008 165)",
+        "tonalRamp": [
+          "#080c0a",
+          "#212523",
+          "#3c413f",
+          "#5a5f5c",
+          "#797f7c",
+          "#9aa09d",
+          "#c0c6c3",
+          "#eaf0ed"
+        ]
+      },
+      "trail-calm": {
+        "role": "neutral",
+        "displayName": "Rastro Frio",
+        "canonical": "#c9b48a",
+        "oklch": "oklch(77.7% 0.061 84)",
+        "tonalRamp": [
+          "#110a00",
+          "#2f2203",
+          "#4f3d15",
+          "#6e5b34",
+          "#8e7b52",
+          "#b09c73",
+          "#d7c297",
+          "#feedc9"
+        ]
+      },
+      "trail-hot": {
+        "role": "neutral",
+        "displayName": "Rastro Quente",
+        "canonical": "#fff3cf",
+        "oklch": "oklch(96.4% 0.049 92)",
+        "tonalRamp": [
+          "#100a00",
+          "#2d2304",
+          "#493f20",
+          "#675d3e",
+          "#887d5c",
+          "#a99e7c",
+          "#cfc4a1",
+          "#faeeca"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Número-resposta na placa gigante de abertura e fechamento."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Pergunta ou afirmação de cada estação, máx. 22ch."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Valor dentro de uma placa."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto de apoio em muted, máx. 52ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Legenda da placa em maiúsculas."
+      },
+      "caption-mono": {
+        "displayName": "Caption Mono",
+        "purpose": "Aba e célula da planilha que produziu o número."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sign-cast",
+        "value": "0 1.4rem 2.6rem -1.2rem rgba(0,0,0,0.85), 0 0.3rem 0.6rem rgba(0,0,0,0.35)",
+        "purpose": "Lançamento de placa, painel LED, resultado de equação e barra empilhada."
+      },
+      {
+        "name": "sign-film",
+        "value": "inset 0 0 0 0.24rem var(--green), inset 0 0 0 0.42rem var(--white)",
+        "purpose": "Borda branca interna da placa; versão em foco troca white por yellow."
+      },
+      {
+        "name": "vms-bezel",
+        "value": "inset 0 0 0 0.2rem #1d2226, inset 0 0 0 0.32rem #0b0d0f, 0 1.4rem 2.6rem -1.2rem rgba(0,0,0,0.9)",
+        "purpose": "Bisel do painel de mensagem variável."
+      },
+      {
+        "name": "control-ring",
+        "value": "inset 0 0 0 0.1rem var(--asphalt-4)",
+        "purpose": "Botões de navegação, presets e painel de fórmula."
+      },
+      {
+        "name": "kmpost",
+        "value": "inset 0 0 0 0.14rem #111, inset 0 0 0 0.24rem var(--white), 0 0.8rem 1.6rem -0.6rem rgba(0,0,0,0.8)",
+        "purpose": "Marco de quilômetro."
+      },
+      {
+        "name": "diamond-drop",
+        "value": "drop-shadow(0 0.5rem 0.8rem rgba(0,0,0,0.5))",
+        "purpose": "Losango de advertência SVG (filter)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Transições de estado em CSS."
+      },
+      {
+        "name": "hover",
+        "value": "180-200ms var(--ease-out)",
+        "purpose": "Cor e fundo de links, botões e presets."
+      },
+      {
+        "name": "press",
+        "value": "160ms var(--ease-out), scale(0.94)",
+        "purpose": "Botão de direção pressionado; polegar do slider cresce 1.15."
+      },
+      {
+        "name": "step-reveal",
+        "value": "opacity 420ms, transform 520ms (translateY 0.8rem), filter 420ms (blur 4px), var(--ease-out)",
+        "purpose": "Passos dentro de uma estação."
+      },
+      {
+        "name": "travel",
+        "value": "GSAP expo.inOut, min(0.95s + 0.12s por estação extra, 1.5s)",
+        "purpose": "Viagem entre estações: pista, camadas de profundidade (32% da largura × profundidade), faixa tracejada."
+      },
+      {
+        "name": "trail-surge",
+        "value": "flow → dir×9 em 45% da viagem (power2.in), volta a 1 em 110% (power3.out)",
+        "purpose": "Rastros de luz aceleram e assentam."
+      },
+      {
+        "name": "sign-arrive",
+        "value": "scale 0.9 → 1, y 1.2rem → 0, opacity 0.35 → 1, 0.9s expo.out, stagger 0.05s",
+        "purpose": "Placas e painéis chegando à estação."
+      },
+      {
+        "name": "glint-sweep",
+        "value": "--sweep -90% → 90%, --glint 0.9 → 0, 1.2s power2.inOut, stagger 0.06s",
+        "purpose": "Reflexo varrendo a película da placa."
+      },
+      {
+        "name": "pointer-camera",
+        "value": "lerp 0.06 por quadro em --pn-x/--pn-y (-1 a 1)",
+        "purpose": "Câmera e brilho da película seguem o ponteiro."
+      },
+      {
+        "name": "trails-dim",
+        "value": "opacity 900ms var(--ease-out)",
+        "purpose": "Rastros em 1 nas estações-âncora, 0.5 nas de leitura."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "transition-duration: 0ms",
+        "purpose": "prefers-reduced-motion: tudo instantâneo, rastros estáticos."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "deck",
+        "value": "(min-width: 900px) and (min-aspect-ratio: 1/1)"
+      },
+      {
+        "name": "road-vertical",
+        "value": "(max-width: 899px), (max-aspect-ratio: 1/1)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Placa",
+      "kind": "card",
+      "refersTo": "sign",
+      "description": "Número oficial auditado com legenda e célula de origem.",
+      "html": "<div class=\"ds-sign\"><span class=\"ds-sign-legend\">Sinistralidade</span><span class=\"ds-sign-value\">62,5%</span><span class=\"ds-sign-cap\">LR Indication · L14</span></div>",
+      "css": ".ds-sign{display:inline-flex;flex-direction:column;align-items:center;gap:0.1rem;padding:1.4rem 2rem 1.1rem;background:var(--green,#0b6b3f);color:var(--white,#f2f4f1);border-radius:0.95rem;box-shadow:inset 0 0 0 0.24rem var(--green), inset 0 0 0 0.42rem var(--white), 0 1.4rem 2.6rem -1.2rem rgba(0,0,0,0.85), 0 0.3rem 0.6rem rgba(0,0,0,0.35);font-family:Overpass,'Helvetica Neue',Arial,sans-serif;text-align:center;transition:box-shadow 200ms cubic-bezier(0.16,1,0.3,1)}.ds-sign:hover{box-shadow:inset 0 0 0 0.24rem var(--green,#0b6b3f),inset 0 0 0 0.42rem var(--yellow,#f5c400),0 1.4rem 2.6rem -1.2rem rgba(0,0,0,0.85),0 0.3rem 0.6rem rgba(0,0,0,0.35)}.ds-sign-legend{font-weight:800;text-transform:uppercase;letter-spacing:0.02em;font-size:1.15rem;line-height:1.1}.ds-sign-value{font-weight:900;font-size:2.9rem;line-height:1;letter-spacing:-0.02em;font-feature-settings:'tnum' 1,'lnum' 1}.ds-sign-cap{font-family:'Overpass Mono',ui-monospace,monospace;font-size:1rem;color:var(--green-ink,#d9efe2);margin-top:0.35rem}"
+    },
+    {
+      "name": "Placa em destaque",
+      "kind": "card",
+      "refersTo": "sign-hot",
+      "description": "Placa cujo valor está em foco ou mudou: borda interna amarela.",
+      "html": "<div class=\"ds-sign-hot\"><span class=\"ds-sh-legend\">Reajuste</span><span class=\"ds-sh-value\">−0,5%</span></div>",
+      "css": ".ds-sign-hot{display:inline-flex;flex-direction:column;align-items:center;padding:1.4rem 2rem 1.1rem;background:var(--green,#0b6b3f);color:var(--white,#f2f4f1);border-radius:0.95rem;box-shadow:inset 0 0 0 0.24rem var(--green,#0b6b3f),inset 0 0 0 0.42rem var(--yellow,#f5c400),0 1.4rem 2.6rem -1.2rem rgba(0,0,0,0.85),0 0.3rem 0.6rem rgba(0,0,0,0.35);font-family:Overpass,'Helvetica Neue',Arial,sans-serif}.ds-sh-legend{font-weight:800;text-transform:uppercase;letter-spacing:0.02em;font-size:1.15rem}.ds-sh-value{font-weight:900;font-size:2.9rem;line-height:1;color:#fff6cf}"
+    },
+    {
+      "name": "Painel LED (VMS)",
+      "kind": "custom",
+      "refersTo": "vms",
+      "description": "Veredito do modelo em matriz de pontos âmbar (estático aqui; no build é canvas 5×7).",
+      "html": "<div class=\"ds-vms\"><span class=\"ds-vms-t\">REAJUSTE −0,5%</span></div>",
+      "css": ".ds-vms{display:inline-block;background:var(--vms-black,#07090a);border-radius:0.6rem;padding:0.9rem 1.1rem;box-shadow:inset 0 0 0 0.2rem #1d2226,inset 0 0 0 0.32rem #0b0d0f,0 1.4rem 2.6rem -1.2rem rgba(0,0,0,0.9)}.ds-vms-t{font-family:'Overpass Mono',ui-monospace,monospace;font-size:2rem;font-weight:400;letter-spacing:0.2em;color:var(--amber,#ffb000);text-shadow:0 0 0.4rem rgba(255,176,0,0.45)}"
+    },
+    {
+      "name": "Abas de saída",
+      "kind": "nav",
+      "refersTo": "exit-link",
+      "description": "Navegação do topo: saídas numeradas, atual vira placa verde.",
+      "html": "<nav class=\"ds-exits\"><a href=\"#\"><span>Saída 1<svg viewBox=\"0 0 12 12\" aria-hidden=\"true\"><path d=\"M1 11 L11 1 M4 1 H11 V8\"/></svg></span>Prêmio</a><a href=\"#\" aria-current=\"step\"><span>Saída 2<svg viewBox=\"0 0 12 12\" aria-hidden=\"true\"><path d=\"M1 11 L11 1 M4 1 H11 V8\"/></svg></span>Sinistros</a></nav>",
+      "css": ".ds-exits{display:flex;gap:0.3rem;font-family:Overpass,'Helvetica Neue',Arial,sans-serif}.ds-exits a{display:flex;flex-direction:column;align-items:center;text-decoration:none;padding:0.35rem 0.75rem 0.4rem;border-radius:0.5rem;color:var(--muted,#a9b2b6);font-size:0.92rem;line-height:1.2;transition:color 200ms cubic-bezier(0.16,1,0.3,1),background-color 200ms cubic-bezier(0.16,1,0.3,1)}.ds-exits a span{font-weight:800;text-transform:uppercase;font-size:0.78rem;letter-spacing:0.04em}.ds-exits svg{width:0.6rem;height:0.6rem;margin-left:0.3rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}.ds-exits a:hover{color:var(--white,#f2f4f1)}.ds-exits a:focus-visible{outline:0.2rem solid var(--yellow,#f5c400);outline-offset:0.25rem}.ds-exits a[aria-current='step']{background:var(--green,#0b6b3f);color:var(--white,#f2f4f1);box-shadow:inset 0 0 0 0.12rem var(--white,#f2f4f1)}"
+    },
+    {
+      "name": "Preset",
+      "kind": "button",
+      "refersTo": "preset",
+      "description": "Cenário do simulador; o ativo vira placa verde com borda amarela.",
+      "html": "<button class=\"ds-preset\">Base do professor</button> <button class=\"ds-preset is-on\">Nossa recomendação</button>",
+      "css": ".ds-preset{font:700 1rem Overpass,'Helvetica Neue',Arial,sans-serif;color:var(--white,#f2f4f1);cursor:pointer;background:var(--asphalt-3,#20262b);border:0;border-radius:0.55rem;padding:0.65rem 1rem 0.55rem;box-shadow:inset 0 0 0 0.1rem var(--asphalt-4,#2c343a);transition:background-color 180ms cubic-bezier(0.16,1,0.3,1),box-shadow 180ms cubic-bezier(0.16,1,0.3,1)}.ds-preset:hover{background:var(--asphalt-4,#2c343a)}.ds-preset:focus-visible{outline:0.2rem solid var(--yellow,#f5c400);outline-offset:0.25rem}.ds-preset.is-on{background:var(--green,#0b6b3f);box-shadow:inset 0 0 0 0.16rem var(--green,#0b6b3f),inset 0 0 0 0.28rem var(--yellow,#f5c400)}"
+    },
+    {
+      "name": "Botão de direção",
+      "kind": "button",
+      "refersTo": "drive-button",
+      "description": "Avançar/voltar pela estrada.",
+      "html": "<button class=\"ds-drive\" aria-label=\"Avançar\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M9 5l7 7-7 7\"/></svg></button>",
+      "css": ".ds-drive{width:3rem;height:3rem;display:grid;place-items:center;cursor:pointer;background:var(--asphalt-3,#20262b);color:var(--white,#f2f4f1);border:0;border-radius:50%;box-shadow:inset 0 0 0 0.1rem var(--asphalt-4,#2c343a);transition:background-color 180ms cubic-bezier(0.16,1,0.3,1),transform 160ms cubic-bezier(0.16,1,0.3,1)}.ds-drive:hover{background:var(--asphalt-4,#2c343a)}.ds-drive:active{transform:scale(0.94)}.ds-drive:focus-visible{outline:0.2rem solid var(--yellow,#f5c400);outline-offset:0.25rem}.ds-drive svg{width:1.4rem;height:1.4rem;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}"
+    },
+    {
+      "name": "Controle de premissa",
+      "kind": "input",
+      "refersTo": "",
+      "description": "Slider com polegar losango amarelo e célula de origem.",
+      "html": "<label class=\"ds-post\"><span class=\"ds-post-l\">Severidade projetada</span><output>+2,0%</output><input type=\"range\" value=\"50\" style=\"--p:50%\"><span class=\"ds-post-c\">Loss Trend - 1 · G40</span></label>",
+      "css": ".ds-post{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:0.2rem 1rem;font-family:Overpass,'Helvetica Neue',Arial,sans-serif;color:var(--white,#f2f4f1);width:24rem}.ds-post-l{font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:0.03em}.ds-post output{font-size:1.9rem;font-weight:900}.ds-post-c{grid-column:1/-1;font-family:'Overpass Mono',ui-monospace,monospace;color:var(--muted,#a9b2b6)}.ds-post input{grid-column:1/-1;-webkit-appearance:none;appearance:none;width:100%;height:2rem;background:transparent;margin:0}.ds-post input::-webkit-slider-runnable-track{height:0.42rem;background:linear-gradient(90deg,var(--lane,#e9ece8) 0 var(--p,50%),var(--asphalt-4,#2c343a) var(--p,50%));border-radius:1rem}.ds-post input::-webkit-slider-thumb{-webkit-appearance:none;width:1.7rem;height:1.7rem;margin-top:-0.64rem;background:var(--yellow,#f5c400);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);transition:transform 160ms cubic-bezier(0.16,1,0.3,1)}.ds-post input:active::-webkit-slider-thumb{transform:scale(1.15)}.ds-post input:focus-visible{outline:0.18rem solid var(--yellow,#f5c400);outline-offset:0.2rem}"
+    },
+    {
+      "name": "Marco de km",
+      "kind": "custom",
+      "refersTo": "kmpost",
+      "description": "Posição atual na estrada.",
+      "html": "<div class=\"ds-km\"><span>KM</span><b>9</b><small>/12</small></div>",
+      "css": ".ds-km{display:inline-grid;grid-template-columns:auto auto;align-items:baseline;justify-items:center;column-gap:0.15rem;background:var(--white,#f2f4f1);color:#111;border-radius:0.4rem;padding:0.35rem 0.75rem 0.25rem;box-shadow:inset 0 0 0 0.14rem #111,inset 0 0 0 0.24rem var(--white,#f2f4f1),0 0.8rem 1.6rem -0.6rem rgba(0,0,0,0.8);line-height:1;font-family:Overpass,'Helvetica Neue',Arial,sans-serif}.ds-km span{grid-column:1/-1;font-weight:800;font-size:0.85rem}.ds-km b{font-size:2rem;font-weight:900}.ds-km small{font-size:0.8rem;font-weight:700}"
+    },
+    {
+      "name": "Legenda com régua",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Nomeia a célula da planilha entre réguas.",
+      "html": "<p class=\"ds-cap\"><span>Development · C12</span></p>",
+      "css": ".ds-cap{display:flex;align-items:center;gap:0.8rem;margin:0;font-family:'Overpass Mono',ui-monospace,monospace;font-size:1rem;color:var(--muted,#a9b2b6)}.ds-cap::before,.ds-cap::after{content:'';height:1px;background:var(--asphalt-4,#2c343a);flex:1;min-width:1.5rem}.ds-cap::before{flex:0 0 1.5rem}"
+    },
+    {
+      "name": "Losango de advertência",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Placa amarela de atenção para avisos e erros encontrados.",
+      "html": "<svg class=\"ds-diamond\" viewBox=\"0 0 100 100\" aria-hidden=\"true\"><rect x=\"17\" y=\"17\" width=\"66\" height=\"66\" rx=\"6\" transform=\"rotate(45 50 50)\" fill=\"#f5c400\"/><rect x=\"21.5\" y=\"21.5\" width=\"57\" height=\"57\" rx=\"4\" transform=\"rotate(45 50 50)\" fill=\"none\" stroke=\"#111\" stroke-width=\"2.5\"/><rect x=\"46\" y=\"28\" width=\"8\" height=\"30\" rx=\"3\" fill=\"#111\"/><circle cx=\"50\" cy=\"69\" r=\"5\" fill=\"#111\"/></svg>",
+      "css": ".ds-diamond{width:4.2rem;height:4.2rem;filter:drop-shadow(0 0.5rem 0.8rem rgba(0,0,0,0.5))}"
+    }
+  ],
+  "narrative": {
+    "northStar": "A Rodovia Noturna",
+    "overview": "Cada ideia é um objeto de beira de estrada à noite. O fundo é asfalto fosco quase preto com grão fino e rastros de faróis em longa exposição; sobre ele, placas verde-rodovia com borda branca interna carregam os números, painéis de mensagem variável em LED âmbar dão o veredito, e a pista (faixa contínua, faixa tracejada, marco de quilômetro) ancora a parte de baixo da tela. Nada é \"card\": tudo é placa, painel, poste ou faixa.\n\nA densidade é de sinalização, não de documento: poucos elementos por tela, números enormes lidos a distância num telão, texto corrido curto e em cinza. O movimento é de viagem: a estação seguinte chega da direita em camadas de profundidade, a pista corre, os rastros de luz aceleram e as placas captam um reflexo que varre a película. O ponteiro funciona como a cabeça de quem dirige: a câmera desliza levemente e todas as placas refletem a mesma fonte de luz.\n\nA recusa confirmada é o deck corporativo de título, gráfico e logo: nenhum slide branco, nenhum template de apresentação, nenhuma identidade de terceiros.",
+    "keyCharacteristics": [
+      "Asfalto escuro com grão e rastros de luz em canvas como única superfície de fundo.",
+      "Placas verdes com borda branca interna desenhada por sombras internas, cantos arredondados.",
+      "LED âmbar em matriz de pontos para o resultado que o modelo emite.",
+      "Amarelo refletivo só no que está em foco ou mudou.",
+      "Overpass em todos os pesos; Overpass Mono só para nomear a célula da planilha.",
+      "Tudo em rem escalado como slide (base 1440×900) no modo apresentação."
+    ],
+    "rules": [
+      {
+        "name": "The Reflective Yellow Rule",
+        "body": "O amarelo só aparece no que está em foco, selecionado ou alterado. Se nada mudou, nada é amarelo.",
+        "section": "colors"
+      },
+      {
+        "name": "The Emitted Amber Rule",
+        "body": "Âmbar é luz emitida pelo modelo: LED, projeções e valores ajustados. Nunca é cor de botão, borda ou navegação.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cell Caption Rule",
+        "body": "Todo número oficial carrega, em Overpass Mono, o nome da aba e da célula que o produziu. O mono não serve para mais nada além de células e código.",
+        "section": "typography"
+      },
+      {
+        "name": "The Heavy Numbers Rule",
+        "body": "Número é 900, texto é 400–800. Nenhum valor aparece em peso leve; o único peso leve (300) é o operador da equação.",
+        "section": "typography"
+      },
+      {
+        "name": "The Station Rule",
+        "body": "Uma estação, uma ideia, uma tela. Se não cabe em 1440×900 sem rolar, é duas estações.",
+        "section": "layout"
+      },
+      {
+        "name": "The One Light Source Rule",
+        "body": "Todas as placas refletem a mesma luz: o brilho da película segue o ponteiro e o reflexo de chegada varre da esquerda para a direita. Nenhuma placa tem luz própria; só o LED emite.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** colocar todo número oficial numa placa verde com borda branca interna, com a célula de origem em Overpass Mono.",
+      "**Do** usar o painel LED âmbar para o resultado que o modelo calcula ao vivo.",
+      "**Do** reservar o amarelo para foco, seleção e o que mudou (borda, polegar, diagonal, anel de foco).",
+      "**Do** escrever medidas em rem para que a estação escale como slide na base 1440×900.",
+      "**Do** atribuir profundidade a cada bloco de estação: texto longe (0.3–0.45), placas e controles perto (0.8–1.25).",
+      "**Do** manter números em 900 com algarismos tabulares."
+    ],
+    "donts": [
+      "**Don't** criar superfícies claras de página ou cards brancos; a única peça branca é o marco de quilômetro.",
+      "**Don't** usar âmbar em botões, bordas ou navegação; âmbar é só luz emitida.",
+      "**Don't** desenhar bordas de placa com `border` externo; a borda é interna e dupla.",
+      "**Don't** usar outra família tipográfica além de Overpass e Overpass Mono.",
+      "**Don't** usar logo ou identidade visual da Allianz.",
+      "**Don't** montar a estação como slide corporativo de título, gráfico e logo."
+    ]
+  }
+}
