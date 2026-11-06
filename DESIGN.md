@@ -255,7 +255,7 @@ O veredito do modelo, em LED.
 ### Navegação (abas de saída, escudo, marco, botões)
 - **Escudo:** "EAC0465 · FEA-USP" com contorno branco interno de 0.12rem, volta ao KM 0.
 - **Abas de saída:** rótulo "Saída N" em maiúsculas com seta diagonal em SVG, nome abaixo; inativa em muted, hover em white (200ms), atual em placa verde com contorno branco.
-- **Marco de km:** poste branco com borda dupla escura, "KM", número 2rem 900 e "/12".
+- **Marco de km:** poste branco com borda dupla escura, "KM", número 2rem 900 e "/11".
 - **Botões de direção:** círculos de 3rem em asphalt-3, hover asphalt-4, pressionado 94%, desabilitado 35% de opacidade; pontos de passo de 0.45rem entre eles.
 
 ### Presets (Buttons)
@@ -276,7 +276,7 @@ Texto mono em muted entre duas linhas de 1px em asphalt-4; a régua da esquerda 
 Números alinhados à direita, cabeçalho em maiúsculas muted, divisórias de 1px em asphalt-3/4. Linha selecionada vira faixa verde com cantos panel nas pontas; valores projetados em amber; valor alterado sublinhado e, após a revelação, amarelo.
 
 ### Losango de advertência
-Placa SVG amarela com contorno interno e ponto de exclamação em sign-ink; acompanha avisos e os erros encontrados.
+Placa SVG amarela com contorno interno e ponto de exclamação em sign-ink; acompanha avisos.
 
 ### Movimento de viagem
 Navegação entre estações desliza a pista inteira (expo.inOut, 0.95s mais 0.12s por estação pulada, até 1.5s); as camadas entram com deslocamento proporcional à profundidade, a faixa tracejada corre e os rastros aceleram e depois assentam. Passos dentro de uma estação aparecem com opacidade, 0.8rem de subida e desfoque de 4px (420–520ms, `--ease-out`). Com movimento reduzido, tudo é instantâneo e os rastros param.

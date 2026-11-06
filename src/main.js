@@ -30,7 +30,7 @@ track.innerHTML = STATIONS.map((s) => `
 const sections = [...track.querySelectorAll('.station')];
 
 // camadas de profundidade: o texto fica mais longe, placas e gráficos mais perto
-const DEPTH = { lede: 0.35, 'hero-side': 1.25, gantry: 0.5, 'sim-controls': 1.1, presets: 1.1, debate: 0.45, 'km0-line': 0.3 };
+const DEPTH = { lede: 0.35, 'hero-side': 1.25, gantry: 0.5, 'sim-controls': 1.1, presets: 1.1, 'km0-line': 0.3 };
 sections.forEach((sec) => [...sec.firstElementChild.firstElementChild.children].forEach((el) => {
   if (el.classList.contains('sr-only')) return;
   const key = Object.keys(DEPTH).find((k) => el.classList.contains(k));
@@ -114,7 +114,7 @@ function go(target, { reveal = 'none', instant = false } = {}) {
   sections.forEach((s, k) => (s.inert = k !== cur));
   showSteps(cur, reveal === 'all' ? stepGroups[cur].length : 0);
   markChrome();
-  root.style.setProperty('--tr-o', [0, 8, 9, 12].includes(cur) ? 1 : 0.5);
+  root.style.setProperty('--tr-o', [0, 8, 9, 11].includes(cur) ? 1 : 0.5);
 
   const xp = -(cur / sections.length) * 100;
   if (busy) busy.kill();

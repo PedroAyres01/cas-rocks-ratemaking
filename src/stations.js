@@ -1,4 +1,4 @@
-// Conteúdo das estações (KM 0 a 12). Todo número vem do motor (run), nunca digitado.
+// Conteúdo das estações (KM 0 a 11). Todo número vem do motor (run), nunca digitado.
 import { run, BASE, FINAL, caso } from './engine.js';
 import { pct, num, usd, fac, pp } from './fmt.js';
 
@@ -225,7 +225,7 @@ function km5() {
         <tfoot><tr><th scope="row">Seleção projetada</th><td>${pct(FINAL.freq[1], 1, { sign: true })}</td><td class="hot">${pct(FINAL.sev[1], 1, { sign: true })}</td></tr></tfoot>
       </table>
     </div>
-    <p class="period" data-step="2">Período projetado: de 01/07/2015 até 01/10/2017, meio da vigência das novas apólices = <b>${num(FINAL.proj_period, 2)} anos</b>. A planilha original mostrava 2,7333 (ver KM 11). ${cap('Loss Trend − 1 · F39:G40 · Loss Trend − 5 · F14')}</p>
+    <p class="period" data-step="2">Período projetado: de 01/07/2015 até 01/10/2017, meio da vigência das novas apólices = <b>${num(FINAL.proj_period, 2)} anos</b>. ${cap('Loss Trend − 1 · F39:G40 · Loss Trend − 5 · F14')}</p>
   </div>`;
 }
 
@@ -403,33 +403,7 @@ function km10() {
   </div>`;
 }
 
-// ---------- KM 11: leitura crítica ----------
-function km11() {
-  const bug = run({ ...clone(BASE), proj_period: 2.7333 });
-  return `
-  <div class="km11">
-    <div class="lede">
-      <h2>Dois erros que a planilha escondia</h2>
-      <p>Os dois só aparecem no Excel em português. Nenhum trabalho anterior registrou.</p>
-    </div>
-    <div class="bugs">
-      <article class="bug" data-step="1">
-        ${DIAMOND}
-        <h3>Uma data lida como 7 de janeiro</h3>
-        <p><code>DATEVALUE("7/1/2015")</code> é 1º de julho em inglês e 7 de janeiro em português. O período de tendência vira <b>2,7333 anos</b> em vez de <b>2,25</b>, e o reajuste base sai ${pct(bug.cw)} em vez de ${pct(base.cw)}.</p>
-        <p class="fix">Correção: <code>DATE(ano; 7; 1)</code> em Loss Trend − 5 · C10:C14 e F14.</p>
-      </article>
-      <article class="bug" data-step="2">
-        ${DIAMOND}
-        <h3>O ano que aparece como "yyyy"</h3>
-        <p><code>TEXT(data; "mm/dd/yyyy")</code> mostra "03/31/yyyy": o código de ano em português é "aaaa". Afeta quatro rótulos, não as contas.</p>
-        <p class="fix">Correção: <code>YEAR()</code>, que funciona em qualquer idioma.</p>
-      </article>
-    </div>
-  </div>`;
-}
-
-// ---------- KM 12: fechamento ----------
+// ---------- KM 11: fechamento ----------
 function km12() {
   const lo = run({ ...clone(FINAL), sev: [FINAL.sev[0], 0.015] }).cw;
   const hi = run({ ...clone(FINAL), sev: [FINAL.sev[0], 0.025] }).cw;
@@ -442,15 +416,7 @@ function km12() {
       <span class="range"><span style="--a:${((lo + 0.03) / 0.06) * 100}%;--b:${((hi + 0.03) / 0.06) * 100}%;--m:${((fin.cw + 0.03) / 0.06) * 100}%"></span></span>
       <span class="range-l">Faixa de robustez com severidade de 1,5% a 2,5%: ${pct(lo)} a ${pct(hi, 1, { sign: true })}</span>
     </div>
-    <div class="debate">
-      <h2>Para o debate</h2>
-      <ol>
-        <li>Reduzir 0,5% ou manter a tarifa? A indicação está dentro da faixa de incerteza.</li>
-        <li>A severidade recente (3% nos últimos 4 trimestres) é tendência ou ruído?</li>
-        <li>Quanto o dado corrigido de despesas gerais muda a confiança na base?</li>
-      </ol>
       <p class="sources">Fontes: estudo de caso “Automobile Insurance” da Casualty Actuarial Society (Coleianne, Havens Walch e Priven); planilha e Guia da disciplina EAC0465 Matemática Atuarial Não Vida I, FEA-USP, Prof. João Vinícius de França Carvalho. Todos os números saem do modelo do grupo, conferido célula a célula com a planilha.</p>
-    </div>
   </div>`;
 }
 
@@ -466,7 +432,6 @@ export const STATIONS = [
   { km: 8, exit: 5, title: 'Ponte', html: km8 },
   { km: 9, exit: 5, title: 'Simulador', html: km9 },
   { km: 10, exit: 5, title: 'Prêmio por veículo', html: km10 },
-  { km: 11, exit: 0, title: 'Leitura crítica', html: km11 },
-  { km: 12, exit: 0, title: 'Recomendação', html: km12 },
+  { km: 11, exit: 0, title: 'Recomendação', html: km12 },
 ];
 export { pp };

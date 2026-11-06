@@ -427,19 +427,8 @@ input[type='range']:focus-visible { outline: 0.18rem solid var(--yellow); outlin
 .stack-legend i { font-style: normal; color: var(--muted); font-size: 1rem; }
 .assume { color: var(--muted); font-size: 1.05rem; max-width: 80ch; }
 
-/* KM 11 */
-.km11 { display: grid; gap: 2.4rem; }
-.bugs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3.2rem; }
-.bug { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.6rem 1.6rem; align-content: start; }
-.bug .diamond { grid-row: span 3; width: 5.6rem; height: 5.6rem; }
-.bug h3 { font-size: 1.75rem; font-weight: 800; line-height: 1.15; }
-.bug p { font-size: 1.15rem; color: var(--muted); }
-.bug p b { color: var(--white); }
-.bug code { font-family: var(--f-mono); font-size: 0.92em; color: var(--white); background: var(--asphalt-3); padding: 0.08em 0.35em; border-radius: 0.3em; }
-.bug .fix { color: var(--white); }
-
 /* KM 12 */
-.km12 { display: grid; grid-template-columns: minmax(0, 36rem) minmax(0, 1fr); gap: 4rem; align-items: center; }
+.km12 { display: grid; grid-template-columns: minmax(0, 46rem); gap: 2.4rem; justify-content: center; justify-items: center; text-align: center; }
 .close-sign { width: 100%; --pad: 2rem; }
 .close-sign .sign-legend { font-size: 1.7rem; }
 .close-sign .hero-value { font-size: 7.4rem; }
@@ -449,10 +438,7 @@ input[type='range']:focus-visible { outline: 0.18rem solid var(--yellow); outlin
 .range span::before { content: ''; position: absolute; top: 0; bottom: 0; left: var(--a); width: calc(var(--b) - var(--a)); background: var(--white); border-radius: 1rem; opacity: 0.85; }
 .range span::after { content: ''; position: absolute; top: 50%; left: var(--m); width: 1.4rem; height: 1.4rem; background: var(--yellow); transform: translate(-50%, -50%); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 .range-l { font-size: 0.95rem; color: var(--green-ink); font-weight: 600; }
-.debate h2 { font-size: 2.4rem; font-weight: 800; }
-.debate ol { margin: 1.2rem 0 0; padding-left: 1.6rem; display: grid; gap: 0.8rem; font-size: 1.35rem; font-weight: 600; }
-.debate li::marker { color: var(--muted); font-weight: 900; }
-.sources { margin-top: 2rem; font-size: 0.95rem; color: var(--muted); max-width: 70ch; }
+.sources { margin-top: 0; font-size: 0.95rem; color: var(--muted); max-width: 70ch; }
 
 /* ---------- celular e tablet em pé: estrada vertical ---------- */
 @media (max-width: 899px), (max-aspect-ratio: 1/1) {
@@ -513,9 +499,6 @@ input[type='range']:focus-visible { outline: 0.18rem solid var(--yellow); outlin
   .sim-controls { grid-template-columns: minmax(0, 1fr); }
   .stack-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stack-legend b { font-size: 1.9rem; }
-  .bugs { grid-template-columns: minmax(0, 1fr); }
-  .bug { grid-template-columns: minmax(0, 1fr); }
-  .bug .diamond { grid-row: auto; width: 4rem; height: 4rem; }
   .close-sign .hero-value { font-size: 5rem; }
 }
 
