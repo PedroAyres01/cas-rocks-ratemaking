@@ -9,8 +9,8 @@ colors:
   green: "#0b6b3f"
   green-ink: "#d9efe2"
   white: "#f2f4f1"
-  muted: "#a9b2b6"
-  faint: "#6e787d"
+  muted: "#c3cfc8"
+  faint: "#9aa8a1"
   amber: "#ffb000"
   amber-off: "#2b1f06"
   yellow: "#f5c400"
@@ -176,8 +176,9 @@ Paleta de rodovia à noite: neutros frios de asfalto, um verde de placa, e duas 
 - **Asfalto** (asphalt): fundo de página e cor do tema do navegador.
 - **Asfalto 2 / 3 / 4** (asphalt-2, asphalt-3, asphalt-4): degraus de superfície para painéis de fórmula, botões, presets, trilhas e divisórias de tabela.
 - **Branco Retrorrefletivo** (white): texto principal, borda interna das placas, números.
-- **Cinza Neblina** (muted): texto corrido, rótulos de eixo, cabeçalhos de tabela, navegação inativa.
-- **Cinza Distante** (faint): valores antigos riscados e sublinhado neutro de célula.
+- **Concreto Claro** (muted, ~11:1 sobre o asfalto, leve tom verde das placas): texto corrido, rótulos de eixo, cabeçalhos de tabela, navegação inativa.
+- **Concreto Distante** (faint, ~7:1): valores antigos riscados e sublinhado neutro de célula.
+- **Halo de asfalto** (`--halo`): todo texto fora das placas leva uma sombra escura difusa que o separa dos rastros de luz; placas, LED e ponte ficam sem halo.
 - **Branco Faixa** (lane): faixas de pista, linha de base dos gráficos, parte preenchida do controle deslizante.
 - **Tinta de Poste** (sign-ink): texto e contorno sobre superfícies brancas ou amarelas (marco de km, losango, link de pular).
 - **Séries de composição** (series-green-2, series-green-3, series-concrete): segmentos da barra empilhada do prêmio, em ordem do verde de placa até o concreto.
