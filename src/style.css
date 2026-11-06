@@ -208,8 +208,13 @@ html.deck .station {
 }
 .st-in { width: 100%; max-width: 84rem; margin: 0 auto; }
 
-html.deck [data-step] { transition: opacity 420ms var(--ease-out), transform 520ms var(--ease-out), filter 420ms var(--ease-out); }
-html.deck [data-step]:not(.is-in) { opacity: 0; transform: translateY(0.8rem); filter: blur(4px); }
+html.deck [data-step] { transition: opacity 500ms var(--ease-out), transform 800ms var(--ease-out), filter 500ms var(--ease-out); }
+html.deck [data-step]:not(.is-in) { opacity: 0; transform: translateY(2rem) scale(0.96); filter: blur(6px); }
+/* a barra de composição cresce da esquerda; as placas da ponte caem do pórtico */
+html.deck .seg[data-step] { transform-origin: left center; transition: transform 900ms var(--ease-out); }
+html.deck .seg[data-step]:not(.is-in) { opacity: 1; transform: scaleX(0); filter: none; }
+html.deck .b-sign[data-step] { transform-box: view-box; transition: opacity 400ms var(--ease-out), transform 750ms cubic-bezier(0.34, 1.5, 0.64, 1); }
+html.deck .b-sign[data-step]:not(.is-in) { transform: translateY(-70px); filter: none; }
 html.deck .reduce [data-step] { transition: none; }
 
 .lede h2 { font-size: 3.1rem; font-weight: 800; line-height: 1.08; letter-spacing: -0.02em; max-width: 22ch; }

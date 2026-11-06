@@ -10,6 +10,7 @@ import { STATIONS, SIM_CONTROLS, SIM_PRESETS, bridgeSteps, fin } from './station
 import { run, FINAL } from './engine.js';
 import { LedBoard } from './led.js';
 import { createTrails } from './trails.js';
+import { enter, stopCounts } from './enter.js';
 import { pct, usd } from './fmt.js';
 
 const root = document.documentElement;
@@ -65,10 +66,12 @@ const stepGroups = sections.map((sec) => {
 const shown = sections.map(() => 0);
 
 function showSteps(i, count) {
+  const before = shown[i];
   shown[i] = count;
   stepGroups[i].forEach((g, k) => g.forEach((el) => el.classList.toggle('is-in', k < count)));
   if (i === 8) syncBridge();
   renderStepDots();
+  if (deck && !reduced && i === cur && count === before + 1) enter(stepGroups[i][count - 1], 0.05);
 }
 
 function syncBridge() {
@@ -122,13 +125,14 @@ function go(target, { reveal = 'none', instant = false } = {}) {
   if (instant || reduced || from === cur) {
     gsap.set(track, { xPercent: xp });
     trails.flow = 1;
+    if (instant && !reduced) enter(sections[cur], 0.35);
     return;
   }
   // o momento autoral: a viagem. A pista corre, a estação seguinte chega da direita.
   const dir = Math.sign(cur - from);
   const hops = Math.abs(cur - from);
   const dur = Math.min(0.95 + 0.12 * (hops - 1), 1.5);
-  const signs = [...sections[cur].querySelectorAll('.sign, .vms, .exit-tab, .eq-res, .diamond, .stack-bar')].filter((el) => !el.hasAttribute('data-depth'));
+  const signs = [...sections[cur].querySelectorAll('.vms, .stack-bar')].filter((el) => !el.hasAttribute('data-depth'));
   const vw = innerWidth * 0.32;
   const layersIn = [...sections[cur].querySelectorAll('[data-depth]')];
   const layersOut = [...sections[from].querySelectorAll('[data-depth]')];
@@ -140,7 +144,8 @@ function go(target, { reveal = 'none', instant = false } = {}) {
     .to(trails, { flow: 1, duration: dur * 1.1, ease: 'power3.out' }, dur * 0.45)
     .to(dash, { backgroundPositionX: `${dir > 0 ? '-=' : '+='}${innerWidth * 0.9 * Math.min(hops, 3)}px`, duration: dur, ease: 'expo.inOut' }, 0)
     .fromTo(sections[cur].querySelectorAll('.sign'), { '--sweep': '-90%', '--glint': 0.9 }, { '--sweep': '90%', '--glint': 0, duration: 1.2, ease: 'power2.inOut', stagger: 0.06, clearProps: '--sweep,--glint' }, dur * 0.55)
-    .fromTo(signs, { scale: 0.9, y: '1.2rem', opacity: 0.35 }, { scale: 1, y: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.05, clearProps: 'transform,opacity' }, dur * 0.42);
+    .fromTo(signs, { scale: 0.9, y: '1.2rem', opacity: 0.35 }, { scale: 1, y: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.05, clearProps: 'transform,opacity' }, dur * 0.42)
+    .call(() => enter(sections[cur]), null, dur * 0.48);
 }
 
 function next() {
@@ -223,6 +228,7 @@ function paintRange(c) {
 }
 
 function simRender() {
+  stopCounts();
   const o = run(simP);
   for (const [el, get, fmt] of Object.values(signOut)) {
     const v = get(o);
@@ -293,4 +299,12 @@ if (deck) {
 } else {
   const n = parseHash();
   if (n) requestAnimationFrame(() => sections[n].scrollIntoView());
+  if (!reduced) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      enter(e.target);
+    }), { threshold: 0.2 });
+    sections.forEach((s) => io.observe(s));
+  }
 }
