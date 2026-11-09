@@ -1,310 +1,304 @@
-import '@fontsource/overpass/latin-400.css';
-import '@fontsource/overpass/latin-600.css';
-import '@fontsource/overpass/latin-700.css';
-import '@fontsource/overpass/latin-800.css';
-import '@fontsource/overpass/latin-900.css';
-import '@fontsource/overpass-mono/latin-400.css';
+import '@fontsource/source-serif-4/latin-400.css';
+import '@fontsource/source-serif-4/latin-600.css';
+import '@fontsource-variable/inter';
 import './style.css';
-import { gsap } from 'gsap';
-import { STATIONS, SIM_CONTROLS, SIM_PRESETS, bridgeSteps, fin } from './stations.js';
-import { run, FINAL } from './engine.js';
-import { LedBoard } from './led.js';
-import { createTrails } from './trails.js';
-import { enter, stopCounts } from './enter.js';
-import { pct, usd } from './fmt.js';
+import { run, BASE, FINAL, caso } from './engine.js';
+import { pct, num, usd, fac } from './fmt.js';
+import { initHero } from './hero.js';
+import { waterfall, sensitivity, lossRatios, composition, SEG, ppTxt } from './charts.js';
 
-const root = document.documentElement;
-gsap.config({ nullTargetWarn: false });
-const deckQuery = matchMedia('(min-width: 900px) and (min-aspect-ratio: 1/1)');
-const deck = deckQuery.matches;
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-root.classList.toggle('deck', deck);
-deckQuery.addEventListener('change', () => location.reload());
+const clone = (o) => structuredClone(o);
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const near = (a, b) => Math.abs(a - b) < 1e-9;
 
-// ---------- montar estações ----------
-const track = document.querySelector('.track');
-track.style.setProperty('--n', STATIONS.length);
-track.innerHTML = STATIONS.map((s) => `
-  <section class="station" id="km${s.km}" data-km="${s.km}" aria-label="KM ${s.km} de ${STATIONS.length - 1}: ${s.title}">
-    <div class="st-in">${s.html()}</div>
-  </section>`).join('');
-const sections = [...track.querySelectorAll('.station')];
+// ---------- fatores de desenvolvimento a partir do triângulo ----------
+const ATA = caso.tri.slice(0, 6).map((row) => row.slice(0, 4).map((v, c) => (row[c + 1] != null ? row[c + 1] / v : null)));
+const colVals = (c) => ATA.map((r) => r[c]).filter((v) => v != null);
+const avg = (a) => a.reduce((x, y) => x + y, 0) / a.length;
+const LDF_METHODS = {
+  todos: { label: 'Todos os anos', f: (c) => avg(colVals(c)) },
+  tres: { label: '3 anos', f: (c) => avg(colVals(c).slice(-3)) },
+  quatro: { label: '4 anos', f: (c) => { const v = colVals(c); return avg(v.length >= 4 ? v.slice(-4) : v); } },
+  extremos: { label: 'Sem extremos', f: (c) => { const v = colVals(c); return v.length > 2 ? (v.reduce((a, b) => a + b, 0) - Math.min(...v) - Math.max(...v)) / (v.length - 2) : avg(v); } },
+  geo: { label: 'Geométrica', f: (c) => { const v = colVals(c); return v.reduce((a, b) => a * b, 1) ** (1 / v.length); } },
+};
+const ldfBy = (k) => [0, 1, 2, 3].map(LDF_METHODS[k].f).concat(1);
 
-// camadas de profundidade: o texto fica mais longe, placas e gráficos mais perto
-const DEPTH = { lede: 0.35, 'hero-side': 1.25, gantry: 0.5, 'sim-controls': 1.1, presets: 1.1, 'km0-line': 0.3 };
-sections.forEach((sec) => [...sec.firstElementChild.firstElementChild.children].forEach((el) => {
-  if (el.classList.contains('sr-only')) return;
-  const key = Object.keys(DEPTH).find((k) => el.classList.contains(k));
-  el.dataset.depth = key ? DEPTH[key] : 0.8;
-  el.style.setProperty('--d', el.dataset.depth);
-}));
+// ---------- cenários prontos ----------
+const base = run(BASE);
+const grp = run(FINAL);
+function solveSev(target) {
+  let a = -0.06, b = 0.08;
+  for (let i = 0; i < 60; i++) {
+    const mid = (a + b) / 2;
+    const v = run({ ...clone(FINAL), sev: [FINAL.sev[0], mid] }).cw;
+    if (v > target) b = mid; else a = mid;
+  }
+  return (a + b) / 2;
+}
+const genR = grp.expRatios.gen.anos;
+const genProj = genR[2] ** 2 / genR[0];
+const with_ = (f) => () => { const p = clone(FINAL); f(p); return p; };
+const PRESETS = [
+  { id: 'grupo', group: 'Cenários', label: 'Grupo · recomendação', p: () => clone(FINAL) },
+  { id: 'original', group: 'Cenários', label: 'Planilha original', p: () => clone(BASE) },
+  { id: 'sev25', group: 'Perguntas do Guia', label: 'Severidade 2,5%', p: with_((p) => { p.sev[1] = 0.025; }) },
+  { id: 'sev15', group: 'Perguntas do Guia', label: 'Severidade 1,5%', p: with_((p) => { p.sev[1] = 0.015; }) },
+  { id: 'c500', group: 'Perguntas do Guia', label: '500 sinistros', p: with_((p) => { p.n_claims = 500; }) },
+  { id: 'ldf3', group: 'Perguntas do Guia', label: 'LDF: média de 3 anos', p: with_((p) => { p.ldf_sel = ldfBy('tres'); }) },
+  { id: 'prem2', group: 'Perguntas do Guia', label: 'Tendência de prêmio 2%', p: with_((p) => { p.prem_trend = 0.02; }) },
+  { id: 'data', group: 'Perguntas do Guia', label: 'Erro de data (2,73 anos)', p: with_((p) => { p.proj_period = 2.7333333333; }) },
+  { id: 'gen', group: 'Perguntas do Guia', label: 'Despesa geral projetada', p: with_((p) => { p.exp_sel.gen = genProj; }) },
+  { id: 'tax1', group: 'Perguntas do Guia', label: 'Impostos sem dobrar', p: with_((p) => { p.exp_sel.tax = BASE.exp_sel.tax; }) },
+  { id: 'need', group: 'Teste de estresse', label: 'O que seria preciso para −6,2%', p: with_((p) => { p.sev[1] = solveSev(base.cw); }) },
+];
 
-const allLayers = [...track.querySelectorAll('[data-depth]')];
-const trails = createTrails(document.querySelector('.trails'));
-const LAST = sections.length - 1;
+// ---------- controles ----------
+const sgn1 = (v) => pct(v, 1, { sign: true });
+const sgn2 = (v) => pct(v, 2, { sign: true });
+const QLAB = ['abr/2011', 'jul/2012', 'out/2013', 'jul/2014', 'out/2015', 'jan/2016'];
+const fitsOf = (o, key) => {
+  if (key === 'prem') return Object.entries(o.premFits).map(([n, v]) => ({ n, v }));
+  const i = { freq: 0, sev: 1 }[key];
+  return Object.entries(o.lossFits).map(([n, v]) => ({ n, v: v[i] }));
+};
+const GROUPS = [
+  { id: 'premio', n: '01', title: 'Prêmio', who: 'P1', hint: 'Reajustes históricos e tendência que levam o prêmio de 2011 a 2015 à tarifa e ao nível de 2017.', controls: [
+    ...QLAB.map((q, i) => ({ id: `rc${i}`, label: `Reajuste de ${q}`, min: -0.1, max: 0.15, step: 0.005, fmt: sgn1, get: (p) => p.rate_changes[i], set: (p, v) => { p.rate_changes[i] = v; } })),
+    { id: 'prem', label: 'Tendência de prêmio ao ano', min: 0, max: 0.03, step: 0.0005, fmt: sgn2, fits: 'prem', get: (p) => p.prem_trend, set: (p, v) => { p.prem_trend = v; } },
+  ] },
+  { id: 'dev', n: '02', title: 'Desenvolvimento', who: 'P2', hint: 'Fatores idade a idade selecionados e carregamento de despesas de regulação (ULAE).', ldf: true, controls: [
+    ...['15 → 27 meses', '27 → 39 meses', '39 → 51 meses', '51 → 63 meses'].map((lab, i) => ({ id: `ldf${i}`, label: `Fator ${lab}`, min: 0.95, max: 1.15, step: 0.0005, fmt: (v) => fac(v), get: (p) => p.ldf_sel[i], set: (p, v) => { p.ldf_sel[i] = v; } })),
+    { id: 'ulae', label: 'ULAE sobre sinistros', min: 0.1, max: 0.18, step: 0.0005, fmt: (v) => pct(v, 2), get: (p) => p.ulae_sel, set: (p, v) => { p.ulae_sel = v; } },
+  ] },
+  { id: 'tend', n: '03', title: 'Tendência de sinistros', who: 'P3', hint: 'Frequência e severidade: tendência corrente (até 2015) e projetada (até 2017).', period: true, controls: [
+    { id: 'freq0', label: 'Frequência corrente', min: -0.04, max: 0.02, step: 0.001, fmt: sgn1, get: (p) => p.freq[0], set: (p, v) => { p.freq[0] = v; } },
+    { id: 'freq1', label: 'Frequência projetada', min: -0.04, max: 0.02, step: 0.001, fmt: sgn1, fits: 'freq', get: (p) => p.freq[1], set: (p, v) => { p.freq[1] = v; } },
+    { id: 'sev0', label: 'Severidade corrente', min: -0.02, max: 0.05, step: 0.001, fmt: sgn1, get: (p) => p.sev[0], set: (p, v) => { p.sev[0] = v; } },
+    { id: 'sev1', label: 'Severidade projetada', min: -0.02, max: 0.05, step: 0.001, fmt: sgn1, fits: 'sev', get: (p) => p.sev[1], set: (p, v) => { p.sev[1] = v; } },
+  ] },
+  { id: 'desp', n: '04', title: 'Despesas e lucro', who: 'P4', hint: 'Índices selecionados sobre o prêmio. Gerais e outras aquisições são 75% fixas; licenças, 100%.', controls: [
+    { id: 'gen', label: 'Despesas gerais', min: 0.04, max: 0.11, step: 0.0005, fmt: (v) => pct(v, 2), get: (p) => p.exp_sel.gen, set: (p, v) => { p.exp_sel.gen = v; } },
+    { id: 'acq', label: 'Outras aquisições', min: 0.06, max: 0.11, step: 0.0005, fmt: (v) => pct(v, 2), get: (p) => p.exp_sel.acq, set: (p, v) => { p.exp_sel.acq = v; } },
+    { id: 'lic', label: 'Licenças e taxas', min: 0, max: 0.01, step: 0.0001, fmt: (v) => pct(v, 2), get: (p) => p.exp_sel.lic, set: (p, v) => { p.exp_sel.lic = v; } },
+    { id: 'com', label: 'Comissões', min: 0.08, max: 0.15, step: 0.0005, fmt: (v) => pct(v, 2), get: (p) => p.exp_sel.com, set: (p, v) => { p.exp_sel.com = v; } },
+    { id: 'tax', label: 'Impostos', min: 0.01, max: 0.06, step: 0.0005, fmt: (v) => pct(v, 2), get: (p) => p.exp_sel.tax, set: (p, v) => { p.exp_sel.tax = v; } },
+    { id: 'profit', label: 'Margem de lucro alvo', min: 0, max: 0.1, step: 0.0025, fmt: (v) => pct(v, 2), get: (p) => p.profit, set: (p, v) => { p.profit = v; } },
+  ] },
+  { id: 'cred', n: '05', title: 'Credibilidade', who: 'P5', hint: `Z = √(sinistros ÷ ${num(FINAL.full_cred)}), limitado a 100%. O complemento é a tendência da última indicação.`, controls: [
+    { id: 'claims', label: 'Sinistros na experiência', min: 100, max: 4000, step: 1, fmt: (v) => num(v), get: (p) => p.n_claims, set: (p, v) => { p.n_claims = v; } },
+    { id: 'latest', label: 'Última indicação (complemento)', min: 0, max: 0.25, step: 0.001, fmt: sgn1, get: (p) => p.latest_indication, set: (p, v) => { p.latest_indication = v; } },
+  ] },
+];
+const CONTROLS = GROUPS.flatMap((g) => g.controls);
+const BLOCKS = [
+  { id: 'premio', label: 'Prêmio', short: 'Prêm.', note: 'reajustes e tendência de prêmio', keys: ['rate_changes', 'prem_trend'] },
+  { id: 'dev', label: 'Desenvolvi-\nmento', short: 'Desenv.', note: 'fatores de desenvolvimento e ULAE', keys: ['ldf_sel', 'ulae_sel'] },
+  { id: 'tend', label: 'Tendência', short: 'Tend.', note: 'frequência, severidade e período', keys: ['freq', 'sev', 'proj_period'] },
+  { id: 'desp', label: 'Despesas\ne lucro', short: 'Desp.', note: 'índices de despesa e margem de lucro', keys: ['exp_sel', 'profit', 'gen_exp'] },
+  { id: 'cred', label: 'Credibi-\nlidade', short: 'Cred.', note: 'credibilidade e complemento', keys: ['n_claims', 'full_cred', 'latest_indication'] },
+];
 
-// ---------- painéis de LED ----------
-const ledHero = new LedBoard(document.getElementById('led-hero'), { cols: 14, lines: 2 });
-ledHero.set(['CAS ROCKS ·', 'AUTO PD · 2017'], { instant: true });
+// ---------- estado ----------
+let P = clone(FINAL);
+let wfFrom = 'original';
+try {
+  const m = location.hash.match(/^#c=(.+)$/);
+  if (m) {
+    const q = JSON.parse(decodeURIComponent(atob(m[1])));
+    if (q && typeof q === 'object') P = { ...clone(FINAL), ...q };
+  }
+} catch { P = clone(FINAL); }
 
-const steps = bridgeSteps();
-const ledBridge = new LedBoard(document.getElementById('led-bridge'), { cols: 7, lines: 1 });
-ledBridge.set(pct(steps[0].v), { instant: true });
+// ---------- montar painel ----------
+const pos = (c, v) => ((v - c.min) / (c.max - c.min)) * 100;
+function ctlHTML(c) {
+  const v = c.get(FINAL);
+  return `
+  <div class="ctl" data-id="${c.id}">
+    <div class="ctl-top">
+      <label for="in-${c.id}">${c.label}</label>
+      <output id="out-${c.id}" for="in-${c.id}"></output>
+    </div>
+    <div class="ctl-track">
+      <input type="range" id="in-${c.id}" min="${c.min}" max="${c.max}" step="${c.step}" aria-describedby="ref-${c.id}">
+      <span class="ref-mark" style="left:${pos(c, v)}%" aria-hidden="true"></span>
+      ${c.fits ? `<span class="fits" aria-hidden="true"></span>` : ''}
+    </div>
+    <div class="ctl-foot">
+      <span id="ref-${c.id}" class="ref">Grupo: ${c.fmt(v)}</span>
+      <button type="button" class="undo" data-undo="${c.id}" hidden>Voltar ao grupo</button>
+    </div>
+  </div>`;
+}
+$('#panel').innerHTML = GROUPS.map((g, i) => `
+  <details class="grp" id="g-${g.id}" ${i < 1 || matchMedia('(min-width: 1100px)').matches ? 'open' : ''}>
+    <summary><span class="grp-n">${g.n}</span><span class="grp-t">${g.title}</span><span class="grp-who">${g.who}</span><span class="grp-dot" hidden aria-label="alterado"></span></summary>
+    <p class="grp-hint">${g.hint}</p>
+    ${g.ldf ? `<div class="seg-ctl" role="group" aria-label="Método de seleção dos fatores">${Object.entries(LDF_METHODS).map(([k, m]) => `<button type="button" data-ldf="${k}">${m.label}</button>`).join('')}</div>` : ''}
+    ${g.period ? `<div class="ctl"><div class="ctl-top"><span class="lab">Período de projeção</span></div><div class="seg-ctl" role="group" aria-label="Período de projeção"><button type="button" data-period="2.25">2,25 anos · correto</button><button type="button" data-period="2.7333333333">2,73 · erro de data</button></div></div>` : ''}
+    ${g.controls.map(ctlHTML).join('')}
+  </details>`).join('');
 
-const ledSim = new LedBoard(document.getElementById('led-sim'), { cols: 18, lines: 2 });
-// linha 2 do painel: faixa de robustez ao vivo (severidade projetada ±0,5 p.p.)
-const band = (p) => [-0.005, 0.005].map((d) => run({ ...p, sev: [p.sev[0], p.sev[1] + d] }).cw).sort((a, b) => a - b);
-const simText = (o, p) => { const [lo, hi] = band(p); return [`REAJUSTE ${pct(o.cw)}`, `${pct(lo, 1, { sign: true })} A ${pct(hi, 1, { sign: true })}`]; };
-ledSim.set(simText(fin, FINAL), { instant: true });
+$('#presets').innerHTML = ['Cenários', 'Perguntas do Guia', 'Teste de estresse'].map((grpName) => `
+  <div class="pre-grp"><span class="pre-lab">${grpName}</span><div class="pre-row">${PRESETS.filter((x) => x.group === grpName).map((x) => `<button type="button" class="chip" data-preset="${x.id}" aria-pressed="false">${x.label}</button>`).join('')}</div></div>`).join('');
 
-// ---------- fragmentos (passos dentro de uma estação) ----------
-const stepGroups = sections.map((sec) => {
-  const els = [...sec.querySelectorAll('[data-step]')];
-  const ns = [...new Set(els.map((e) => Number(e.dataset.step)))].sort((a, b) => a - b);
-  return ns.map((n) => els.filter((e) => Number(e.dataset.step) === n));
+// ---------- interação ----------
+let raf = 0;
+const schedule = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); }); };
+
+for (const c of CONTROLS) {
+  const inp = $(`#in-${c.id}`);
+  inp.addEventListener('input', () => { c.set(P, Number(inp.value)); schedule(); });
+}
+$('#panel').addEventListener('click', (e) => {
+  const u = e.target.closest('[data-undo]');
+  if (u) { const c = CONTROLS.find((x) => x.id === u.dataset.undo); c.set(P, c.get(FINAL)); render(); $(`#in-${c.id}`).focus(); return; }
+  const l = e.target.closest('[data-ldf]');
+  if (l) { P.ldf_sel = ldfBy(l.dataset.ldf); render(); return; }
+  const pe = e.target.closest('[data-period]');
+  if (pe) { P.proj_period = Number(pe.dataset.period); render(); }
 });
-const shown = sections.map(() => 0);
+$('#presets').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-preset]');
+  if (!b) return;
+  P = PRESETS.find((x) => x.id === b.dataset.preset).p();
+  render();
+});
+$('#wf-from').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-from]');
+  if (!b) return;
+  wfFrom = b.dataset.from;
+  render();
+});
+$('#reset').addEventListener('click', () => { P = clone(FINAL); render(); });
+$('#share').addEventListener('click', async () => {
+  const note = $('#share-note');
+  try { await navigator.clipboard.writeText(location.href); note.textContent = 'Link do cenário copiado.'; }
+  catch { note.textContent = 'Copie o endereço da barra do navegador: ele guarda o cenário.'; }
+  clearTimeout(note._t); note._t = setTimeout(() => { note.textContent = ''; }, 3200);
+});
 
-function showSteps(i, count) {
-  const before = shown[i];
-  shown[i] = count;
-  stepGroups[i].forEach((g, k) => g.forEach((el) => el.classList.toggle('is-in', k < count)));
-  if (i === 8) syncBridge();
-  renderStepDots();
-  if (deck && !reduced && i === cur && count === before + 1) enter(stepGroups[i][count - 1], 0.05);
-}
-
-function syncBridge() {
-  const lastShown = deck ? shown[8] : steps.length - 1;
-  const v = steps[lastShown].v;
-  ledBridge.set(pct(v));
-  document.querySelectorAll('.b-sign').forEach((g) => g.classList.toggle('is-last', Number(g.dataset.bstep) === lastShown));
-}
-
-// ---------- navegação pela estrada ----------
-let cur = 0;
-let busy = null;
-const kmN = document.getElementById('km-n');
-const kmLive = document.getElementById('km-live');
-const exitLinks = [...document.querySelectorAll('.exits a')];
-const dash = document.querySelector('.lane-dash');
-const stepDots = document.querySelector('.drive-steps');
-const [btnPrev, btnNext] = document.querySelectorAll('.drive-btn');
-
-function renderStepDots() {
-  const total = stepGroups[cur].length;
-  stepDots.innerHTML = total ? Array.from({ length: total }, (_, k) => `<i class="${k < shown[cur] ? 'on' : ''}"></i>`).join('') : '';
-  btnPrev.disabled = cur === 0 && shown[cur] === 0;
-  btnNext.disabled = cur === LAST && shown[cur] === total;
-}
-
-function markChrome() {
-  kmN.textContent = cur;
-  const exit = STATIONS[cur].exit;
-  exitLinks.forEach((a) => (Number(a.dataset.exit) === exit ? a.setAttribute('aria-current', 'step') : a.removeAttribute('aria-current')));
-  kmLive.textContent = `KM ${cur}: ${STATIONS[cur].title}`;
-  history.replaceState(null, '', `#km-${cur}`);
-}
-
-function go(target, { reveal = 'none', instant = false } = {}) {
-  target = Math.max(0, Math.min(LAST, target));
-  if (!deck) {
-    sections[target].scrollIntoView({ behavior: reduced || instant ? 'auto' : 'smooth', block: 'start' });
-    return;
-  }
-  const from = cur;
-  cur = target;
-  sections.forEach((s, k) => (s.inert = k !== cur));
-  showSteps(cur, reveal === 'all' ? stepGroups[cur].length : 0);
-  markChrome();
-  root.style.setProperty('--tr-o', [0, 8, 9, 11].includes(cur) ? 1 : 0.5);
-
-  const xp = -(cur / sections.length) * 100;
-  if (busy) busy.kill();
-  gsap.set(allLayers, { '--tx': '0px' });
-  if (instant || reduced || from === cur) {
-    gsap.set(track, { xPercent: xp });
-    trails.flow = 1;
-    if (instant && !reduced) enter(sections[cur], 0.35);
-    return;
-  }
-  // o momento autoral: a viagem. A pista corre, a estação seguinte chega da direita.
-  const dir = Math.sign(cur - from);
-  const hops = Math.abs(cur - from);
-  const dur = Math.min(0.95 + 0.12 * (hops - 1), 1.5);
-  const signs = [...sections[cur].querySelectorAll('.vms, .stack-bar')].filter((el) => !el.hasAttribute('data-depth'));
-  const vw = innerWidth * 0.32;
-  const layersIn = [...sections[cur].querySelectorAll('[data-depth]')];
-  const layersOut = [...sections[from].querySelectorAll('[data-depth]')];
-  busy = gsap.timeline({ onComplete: () => layersOut.length && gsap.set(layersOut, { '--tx': '0px' }) })
-    .to(track, { xPercent: xp, duration: dur, ease: 'expo.inOut' }, 0)
-    .fromTo(layersIn, { '--tx': (i, el) => `${dir * el.dataset.depth * vw}px` }, { '--tx': '0px', duration: dur, ease: 'expo.inOut' }, 0)
-    .to(layersOut, { '--tx': (i, el) => `${-dir * el.dataset.depth * vw}px`, duration: dur, ease: 'expo.inOut' }, 0)
-    .to(trails, { flow: dir * 9, duration: dur * 0.45, ease: 'power2.in' }, 0)
-    .to(trails, { flow: 1, duration: dur * 1.1, ease: 'power3.out' }, dur * 0.45)
-    .to(dash, { backgroundPositionX: `${dir > 0 ? '-=' : '+='}${innerWidth * 0.9 * Math.min(hops, 3)}px`, duration: dur, ease: 'expo.inOut' }, 0)
-    .fromTo(sections[cur].querySelectorAll('.sign'), { '--sweep': '-90%', '--glint': 0.9 }, { '--sweep': '90%', '--glint': 0, duration: 1.2, ease: 'power2.inOut', stagger: 0.06, clearProps: '--sweep,--glint' }, dur * 0.55)
-    .fromTo(signs, { scale: 0.9, y: '1.2rem', opacity: 0.35 }, { scale: 1, y: 0, opacity: 1, duration: 0.9, ease: 'expo.out', stagger: 0.05, clearProps: 'transform,opacity' }, dur * 0.42)
-    .call(() => enter(sections[cur]), null, dur * 0.48);
-}
-
-function next() {
-  if (shown[cur] < stepGroups[cur].length) showSteps(cur, shown[cur] + 1);
-  else if (cur < LAST) go(cur + 1);
-}
-function prev() {
-  if (shown[cur] > 0) showSteps(cur, shown[cur] - 1);
-  else if (cur > 0) go(cur - 1, { reveal: 'all' });
-}
-
-const parseHash = () => {
-  const m = location.hash.match(/^#km-(\d+)$/);
-  return m ? Number(m[1]) : null;
-};
-
-if (deck) {
-  btnNext.addEventListener('click', next);
-  btnPrev.addEventListener('click', prev);
-
-  addEventListener('keydown', (e) => {
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
-    const t = e.target;
-    const inRange = t instanceof HTMLInputElement && t.type === 'range';
-    const onControl = t.closest?.('button, a');
-    const k = e.key;
-    if (inRange && !['PageDown', 'PageUp'].includes(k)) return;
-    if (onControl && (k === ' ' || k === 'Enter')) return;
-    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(k)) { e.preventDefault(); next(); }
-    else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(k)) { e.preventDefault(); prev(); }
-    else if (k === 'Home') { e.preventDefault(); go(0); }
-    else if (k === 'End') { e.preventDefault(); go(LAST, { reveal: 'all' }); }
-    else if (/^[0-9]$/.test(k)) go(Number(k), { reveal: 'all' });
-    else if (k === 'f' || k === 'F') {
-      if (document.fullscreenElement) document.exitFullscreen();
-      else root.requestFullscreen?.().catch(() => {});
-    }
-  });
-
-  let tx = null;
-  addEventListener('touchstart', (e) => { tx = e.target.closest('.sim-controls, .tri-wrap, .bridge-wrap') ? null : e.touches[0].clientX; }, { passive: true });
-  addEventListener('touchend', (e) => {
-    if (tx == null) return;
-    const dx = e.changedTouches[0].clientX - tx;
-    if (Math.abs(dx) > 60) (dx < 0 ? next : prev)();
-    tx = null;
-  });
-
-  addEventListener('hashchange', () => { const n = parseHash(); if (n != null && n !== cur) go(n, { reveal: 'all' }); });
-  addEventListener('resize', () => gsap.set(track, { xPercent: -(cur / sections.length) * 100 }));
-} else {
-  sections.forEach((_, i) => showSteps(i, stepGroups[i].length));
-  syncBridge();
-}
-
-document.querySelectorAll('[data-go]').forEach((a) => a.addEventListener('click', (e) => {
-  e.preventDefault();
-  go(Number(a.dataset.go), { reveal: 'all' });
-}));
-
-// ---------- simulador ----------
-let simP = structuredClone(FINAL);
-const inputs = Object.fromEntries(SIM_CONTROLS.map((c) => [c.id, document.getElementById(`c-${c.id}`)]));
-const outputs = Object.fromEntries(SIM_CONTROLS.map((c) => [c.id, document.getElementById(`v-${c.id}`)]));
-const signOut = {
-  lr: [document.getElementById('o-lr'), (o) => o.LR, (v) => pct(v)],
-  fix: [document.getElementById('o-fix'), (o) => o.fixed, (v) => pct(v)],
-  var: [document.getElementById('o-var'), (o) => o.var, (v) => pct(v)],
-  z: [document.getElementById('o-z'), (o) => o.Z, (v) => pct(v, 0)],
-};
-const oPrem = document.getElementById('o-prem');
-const premV = document.getElementById('o-prem-v');
-const presetBtns = [...document.querySelectorAll('.preset')];
-let ledTimer;
-
-function paintRange(c) {
-  const el = inputs[c.id];
-  const p = ((Number(el.value) - c.min) / (c.max - c.min)) * 100;
-  el.style.setProperty('--p', `${p}%`);
-}
-
-function simRender() {
-  stopCounts();
-  const o = run(simP);
-  for (const [el, get, fmt] of Object.values(signOut)) {
-    const v = get(o);
-    el.querySelector('.sign-value').textContent = fmt(v);
-    el.classList.toggle('is-hot', fmt(v) !== fmt(get(fin)));
-  }
-  oPrem.textContent = `Reajuste ${pct(o.cw)}; prêmio médio por veículo de ${usd(o.avgPremProj)} para ${usd(o.avgPremNew)}`;
-  clearTimeout(ledTimer);
-  premV.textContent = `${usd(o.avgPremProj)} → ${usd(o.avgPremNew)}`;
-  ledTimer = setTimeout(() => ledSim.set(simText(o, simP)), 50);
-}
-
-function syncControls() {
-  for (const c of SIM_CONTROLS) {
-    inputs[c.id].value = c.get(simP);
-    outputs[c.id].textContent = c.fmt(c.get(simP));
-    paintRange(c);
-  }
-}
-
-for (const c of SIM_CONTROLS) {
-  paintRange(c);
-  inputs[c.id].addEventListener('input', () => {
-    const v = Number(inputs[c.id].value);
-    c.set(simP, v);
-    outputs[c.id].textContent = c.fmt(v);
-    paintRange(c);
-    presetBtns.forEach((b) => b.classList.remove('is-on'));
-    simRender();
-  });
-}
-presetBtns.forEach((b) => b.addEventListener('click', () => {
-  simP = SIM_PRESETS.find((s) => s.id === b.dataset.preset).p();
-  presetBtns.forEach((x) => x.classList.toggle('is-on', x === b));
-  syncControls();
-  simRender();
-}));
-
-// ---------- câmera que segue o ponteiro (pan suavizado, como no projeto do Isla) ----------
-if (deck && !reduced) {
-  let tx = 0, ty = 0, cx = 0, cy = 0, glint = 0, tg = 0;
-  addEventListener('pointermove', (e) => {
-    if (e.pointerType !== 'mouse') return;
-    tx = (e.clientX / innerWidth - 0.5) * 2;
-    ty = (e.clientY / innerHeight - 0.5) * 2;
-    tg = 1;
-  }, { passive: true });
-  document.documentElement.addEventListener('pointerleave', () => { tx = ty = 0; tg = 0; });
-  const loop = () => {
-    cx += (tx - cx) * 0.06; cy += (ty - cy) * 0.06; glint += (tg - glint) * 0.05;
-    root.style.setProperty('--pn-x', cx.toFixed(4));
-    root.style.setProperty('--pn-y', cy.toFixed(4));
-    root.style.setProperty('--glint', glint.toFixed(3));
-    requestAnimationFrame(loop);
+// ---------- números com transição curta ----------
+const shown = new Map();
+function tween(el, to, fmt) {
+  const from = shown.get(el) ?? to;
+  shown.set(el, to);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || from === to) { el.textContent = fmt(to); return; }
+  const t0 = performance.now(), d = 220;
+  setTimeout(() => { if (shown.get(el) === to) el.textContent = fmt(to); }, d + 40);
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / d), e = 1 - (1 - k) ** 3;
+    el.textContent = fmt(from + (to - from) * e);
+    if (k < 1 && shown.get(el) === to) requestAnimationFrame(step);
   };
-  requestAnimationFrame(loop);
+  requestAnimationFrame(step);
 }
 
-// ---------- início ----------
-if (deck) {
-  const n = parseHash();
-  go(n ?? 0, { reveal: n ? 'all' : 'none', instant: true });
-  if (!reduced) {
-    gsap.fromTo('.hero-sign, .hero-side', { '--tx': (i) => `${(i + 1) * 9}rem`, opacity: 0 }, { '--tx': '0rem', opacity: 1, duration: 1.4, ease: 'expo.out', stagger: 0.16, delay: 0.15, clearProps: 'opacity' });
-    gsap.from(dash, { backgroundPositionX: `${innerWidth}px`, duration: 1.6, ease: 'expo.out' });
-    gsap.fromTo('.hero-sign', { '--sweep': '-90%', '--glint': 1 }, { '--sweep': '90%', '--glint': 0, duration: 1.4, ease: 'power2.inOut', delay: 0.9, clearProps: '--sweep,--glint' });
+const bandOf = (o, p) => (1.645 / Math.sqrt(p.n_claims)) * (o.LR / o.vplr) * o.Z;
+
+function render() {
+  const o = run(P);
+  // painel
+  for (const c of CONTROLS) {
+    const v = c.get(P), inp = $(`#in-${c.id}`);
+    if (Number(inp.value) !== v) inp.value = v;
+    $(`#out-${c.id}`).textContent = c.fmt(v);
+    const changed = !near(v, c.get(FINAL));
+    const box = inp.closest('.ctl');
+    box.classList.toggle('is-changed', changed);
+    $('[data-undo]', box).hidden = !changed;
+    inp.style.setProperty('--fill', `${pos(c, Math.min(c.max, Math.max(c.min, v)))}%`);
+    if (c.fits) {
+      $('.fits', box).innerHTML = fitsOf(o, c.fits).filter((f) => f.v >= c.min && f.v <= c.max)
+        .map((f) => `<i style="left:${pos(c, f.v)}%" title="Ajuste de ${f.n} pontos: ${c.fmt(f.v)}"></i>`).join('');
+    }
   }
-} else {
-  const n = parseHash();
-  if (n) requestAnimationFrame(() => sections[n].scrollIntoView());
-  if (!reduced) {
-    const io = new IntersectionObserver((es) => es.forEach((e) => {
-      if (!e.isIntersecting) return;
-      io.unobserve(e.target);
-      enter(e.target);
-    }), { threshold: 0.2 });
-    sections.forEach((s) => io.observe(s));
+  for (const g of GROUPS) {
+    const ch = g.controls.some((c) => !near(c.get(P), c.get(FINAL))) || (g.period && !near(P.proj_period, FINAL.proj_period));
+    $(`#g-${g.id} .grp-dot`).hidden = !ch;
   }
+  $$('[data-ldf]').forEach((b) => b.setAttribute('aria-pressed', String(ldfBy(b.dataset.ldf).every((v, i) => near(v, P.ldf_sel[i])))));
+  $$('[data-period]').forEach((b) => b.setAttribute('aria-pressed', String(near(Number(b.dataset.period), P.proj_period))));
+  const act = PRESETS.find((x) => same(x.p(), P));
+  $$('[data-preset]').forEach((b) => b.setAttribute('aria-pressed', String(act?.id === b.dataset.preset)));
+  $('#scen-name').textContent = act ? act.label : 'Cenário personalizado';
+  const isGroup = same(P, FINAL);
+  $('#reset').disabled = isGroup;
+
+  // indicadores
+  const band = bandOf(o, P);
+  tween($('#k-cw'), o.cw, (v) => pct(v, 2, { sign: true }));
+  $('#k-cw-d').textContent = isGroup ? `indicação pura ${pct(o.ind, 2)} · credibilidade ${pct(o.Z, 0)}` : `${ppTxt(o.cw - grp.cw)} vs grupo (${pct(grp.cw, 2)})`;
+  tween($('#k-p0'), o.avgPremProj, usd);
+  tween($('#k-p1'), o.avgPremNew, usd);
+  $('#k-p-d').textContent = `prêmio médio de 2015 levado a 2017 · ${usd(o.avgPremNew - o.avgPremProj).replace('US$ −', '−US$ ')} por veículo`;
+  const keepM = 1 - o.LR - o.fixed - o.var;
+  tween($('#k-m'), keepM, (v) => pct(v, 2));
+  $('#k-m-d').textContent = `lucro de ${usd(o.avgPremProj * keepM)} por veículo · alvo ${pct(P.profit, 1)}`;
+  $('#k-b').textContent = `±${(band * 100).toFixed(1).replace('.', ',')} p.p.`;
+  const inside = Math.abs(o.cw) <= band;
+  const v = $('#verdict');
+  v.dataset.state = inside ? 'in' : o.cw > 0 ? 'up' : 'down';
+  $('#verdict-t').textContent = inside ? '0% está dentro da faixa: manter a tarifa é defensável' : o.cw > 0 ? 'Acima da faixa de erro: o cenário pede aumento' : 'Abaixo da faixa de erro: o cenário permite redução';
+  $('#k-b-d').textContent = `faixa da indicação: ${pct(o.cw - band, 1)} a ${pct(o.cw + band, 1)}`;
+  $('#d-cw').textContent = pct(o.cw, 2, { sign: true });
+  $('#d-p').textContent = `${usd(o.avgPremNew)} por veículo`;
+  $('#live').textContent =`Reajuste ${pct(o.cw, 2)}. Prêmio por veículo ${usd(o.avgPremNew)}. ${$('#verdict-t').textContent}.`;
+
+  // gráficos
+  const startP = wfFrom === 'original' ? clone(BASE) : clone(FINAL);
+  const steps = [{ label: wfFrom === 'original' ? 'Planilha\noriginal' : 'Grupo', short: wfFrom === 'original' ? 'Orig.' : 'Grupo', v: run(startP).cw }];
+  const cur = clone(startP);
+  for (const b of BLOCKS) { for (const k of b.keys) cur[k] = clone(P[k]); steps.push({ ...b, v: run(cur).cw }); }
+  steps.push({ label: 'Cenário', short: 'Cen.', v: o.cw });
+  $$('#wf-from [data-from]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.from === wfFrom)));
+  waterfall($('#c-wf'), steps);
+
+  const pts = [];
+  for (let i = -20; i <= 50; i++) { const x = i / 1000; pts.push({ x, y: run({ ...P, sev: [P.sev[0], x] }).cw }); }
+  sensitivity($('#c-sens'), {
+    pts, cur: { x: P.sev[1], y: o.cw }, band,
+    fits: fitsOf(o, 'sev'),
+    onPick: (x) => { P.sev[1] = Math.round(x * 1000) / 1000; render(); },
+  });
+
+  const even = o.vplr - o.fixed;
+  lossRatios($('#c-lr'), { years: caso.years, lr: o.lrByYear, avg: o.LR, even, prem: o.projEP, loss: o.projLoss });
+  $('#lr-table tbody').innerHTML = caso.years.map((y, i) => `<tr><td>${y}</td><td>${num(o.projEP[i])}</td><td>${num(o.projLoss[i])}</td><td>${pct(o.lrByYear[i], 1)}</td></tr>`).join('')
+    + `<tr class="tot"><td>Total</td><td>${num(o.projEP.reduce((a, b) => a + b))}</td><td>${num(o.projLoss.reduce((a, b) => a + b))}</td><td>${pct(o.LR, 2)}</td></tr>`;
+
+  const P0 = o.avgPremProj;
+  const opt = (label, r, hl) => {
+    const prem = P0 * (1 + r);
+    const sin = P0 * o.LR, fix = P0 * o.fixed, vv = prem * o.var;
+    return { label, prem, sin, fix, var: vv, luc: prem - sin - fix - vv, hl };
+  };
+  composition($('#c-comp'), [
+    opt('Manter a tarifa · 0%', 0, true),
+    opt(`Aplicar a indicação · ${pct(o.cw, 2)}`, o.cw),
+    opt("Reduzir 6,2% como a planilha original", -0.062),
+  ]);
+
+  // estado no endereço
+  const hash = isGroup ? '' : '#c=' + btoa(encodeURIComponent(JSON.stringify(P)));
+  if (location.hash !== hash) history.replaceState(null, '', hash || location.pathname + location.search);
 }
+
+$('#comp-legend').innerHTML = SEG.map(([k, n]) => `<li><i class="sw seg-${k}"></i>${n}</li>`).join('');
+render();
+initHero();
+let rw = 0;
+new ResizeObserver(() => { cancelAnimationFrame(rw); rw = requestAnimationFrame(render); }).observe($('#board'));
+
+// entrada dos cartões: cada gráfico se desenha uma vez quando aparece na tela
+const io = new IntersectionObserver((es) => es.forEach((e) => {
+  if (!e.isIntersecting) return;
+  io.unobserve(e.target);
+  e.target.classList.add('is-in');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  $$('.chart', e.target).forEach((c) => { c.classList.add('intro'); setTimeout(() => c.classList.remove('intro'), 2200); });
+}), { threshold: 0.2 });
+$$('.card, .kpis').forEach((c) => { c.classList.add('reveal'); io.observe(c); });

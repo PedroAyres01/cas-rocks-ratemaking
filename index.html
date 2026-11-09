@@ -3,46 +3,150 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>CAS Rocks · Reajuste 2017</title>
-  <meta name="description" content="Indicação de taxa para 2017 do seguro auto de danos materiais da CAS Rocks Insurance: estudo de caso de tarifação, EAC0465 FEA-USP.">
-  <meta name="theme-color" content="#111417">
-  <meta property="og:title" content="CAS Rocks · Reajuste 2017">
-  <meta property="og:description" content="Do −6,2% ao −0,5%: a tarifação do seguro auto contada como uma rodovia. Estudo de caso EAC0465, FEA-USP.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='10' width='56' height='44' rx='8' fill='%230b6b3f'/%3E%3Crect x='8' y='14' width='48' height='36' rx='5' fill='none' stroke='%23f2f4f1' stroke-width='3'/%3E%3Cpath d='M20 32h24' stroke='%23f2f4f1' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <title>CAS Rocks · Simulador de cenários 2017</title>
+  <meta name="description" content="Simulador da indicação de taxa 2017 do seguro auto de danos materiais da CAS Rocks Insurance: mude qualquer premissa e veja o reajuste, o preço por veículo e a margem. Estudo de caso EAC0465, FEA-USP.">
+  <meta name="theme-color" content="#0E1828">
+  <meta property="og:title" content="CAS Rocks · Simulador de cenários 2017">
+  <meta property="og:description" content="Indicação de −0,05%: manter a tarifa. Teste as premissas e veja o efeito no reajuste e no preço por veículo.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230E1828'/%3E%3Crect x='14' y='34' width='8' height='16' fill='%23F0A36B'/%3E%3Crect x='28' y='22' width='8' height='28' fill='%23F7F3EA'/%3E%3Crect x='42' y='28' width='8' height='22' fill='%23F7F3EA'/%3E%3C/svg%3E">
 </head>
 <body>
-  <a class="skip" href="#road">Ir para o conteúdo</a>
-  <header class="chrome">
-    <a class="shield" href="#km-0" data-go="0" aria-label="Início: EAC0465, FEA-USP">EAC0465 · FEA-USP</a>
-    <nav class="exits" aria-label="Saídas do caso">
-      <a href="#km-2" data-go="2" data-exit="1"><span>Saída 1<svg class="exit-arr" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11 L11 1 M4 1 H11 V8"/></svg></span>Prêmio</a>
-      <a href="#km-4" data-go="4" data-exit="2"><span>Saída 2<svg class="exit-arr" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11 L11 1 M4 1 H11 V8"/></svg></span>Sinistros</a>
-      <a href="#km-5" data-go="5" data-exit="3"><span>Saída 3<svg class="exit-arr" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11 L11 1 M4 1 H11 V8"/></svg></span>Tendências</a>
-      <a href="#km-6" data-go="6" data-exit="4"><span>Saída 4<svg class="exit-arr" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11 L11 1 M4 1 H11 V8"/></svg></span>Despesas</a>
-      <a href="#km-7" data-go="7" data-exit="5"><span>Saída 5<svg class="exit-arr" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 11 L11 1 M4 1 H11 V8"/></svg></span>Indicação</a>
-    </nav>
+  <a class="skip" href="#board">Ir para o simulador</a>
+  <section class="hero" aria-labelledby="hero-h">
+    <canvas class="hero-fx" aria-hidden="true"></canvas>
+    <div class="hero-in">
+      <p class="eyebrow eyebrow-light">CAS Rocks Insurance · Tarifação 2017 · RC Danos Materiais</p>
+      <h1 id="hero-h">A tarifa já está no preço certo.</h1>
+      <div class="hero-num" aria-hidden="true">
+        <span class="hn-lab">Reajuste indicado</span>
+        <b id="hero-cw">−6,18%</b>
+      </div>
+      <p class="sr-only">A planilha original indicava redução de 6,2%. Corrigidas as premissas, a indicação do grupo é de −0,05%: manter a tarifa.</p>
+      <div class="hero-bridge" id="hero-bridge"></div>
+      <div class="hero-foot">
+        <p class="hero-sub">A planilha original pedia corte de 6,2%. Corrigidas despesas, reajustes, desenvolvimento e tendência, a indicação vai a −0,05%: seis centavos por veículo, dentro do erro estatístico.</p>
+        <div class="hero-act">
+          <a class="btn btn-light" href="#sim">Testar as premissas</a>
+          <button type="button" class="btn btn-line" id="hero-replay">Rever a ponte</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="sim">
+
+  <header class="top">
+    <div class="top-in">
+      <p class="eyebrow">Extensão da apresentação · vigência 01/01/2017</p>
+      <h2 class="sim-h">Simulador de cenários</h2>
+      <p class="lede">Mude qualquer premissa da tarifação e veja, na hora, o reajuste indicado, o preço por veículo e a margem. As fórmulas são as mesmas da planilha do grupo.</p>
+    </div>
+    <div class="top-act">
+      <button type="button" id="share" class="btn">Copiar link do cenário</button>
+      <button type="button" id="reset" class="btn btn-ghost">Voltar ao cenário do grupo</button>
+      <p id="share-note" class="share-note" role="status"></p>
+    </div>
   </header>
 
-  <div class="trails" aria-hidden="true"><canvas class="tr-bloom"></canvas><canvas class="tr-main"></canvas><div class="tr-vignette"></div></div>
+  <nav id="presets" class="presets" aria-label="Cenários prontos"></nav>
 
-  <main id="road" class="road" tabindex="-1">
-    <div class="track"></div>
-  </main>
+  <div class="app">
+    <aside class="panel" aria-labelledby="panel-h">
+      <h2 id="panel-h" class="panel-h">Premissas <span>a marca <i class="ref-key" aria-hidden="true"></i> mostra a escolha do grupo</span></h2>
+      <div id="panel"></div>
+    </aside>
 
-  <div class="lanes" aria-hidden="true"><span class="lane-solid"></span><span class="lane-dash"></span></div>
+    <main id="board" class="board" tabindex="-1">
+      <section class="kpis" aria-labelledby="scen-name">
+        <p class="kpi-scen">Cenário: <b id="scen-name">Grupo · recomendação</b></p>
+        <div class="kpi kpi-main">
+          <h2 class="kpi-l">Reajuste indicado</h2>
+          <p class="kpi-v" id="k-cw"></p>
+          <p class="kpi-d" id="k-cw-d"></p>
+        </div>
+        <div class="kpi">
+          <h2 class="kpi-l">Prêmio por veículo-ano</h2>
+          <p class="kpi-v kpi-v-sm"><span id="k-p0"></span> <span class="arr" aria-hidden="true">→</span> <span id="k-p1"></span></p>
+          <p class="kpi-d" id="k-p-d"></p>
+        </div>
+        <div class="kpi">
+          <h2 class="kpi-l">Margem se manter a tarifa</h2>
+          <p class="kpi-v kpi-v-sm" id="k-m"></p>
+          <p class="kpi-d" id="k-m-d"></p>
+        </div>
+        <div class="kpi">
+          <h2 class="kpi-l">Erro estatístico, 90%</h2>
+          <p class="kpi-v kpi-v-sm" id="k-b"></p>
+          <p class="kpi-d" id="k-b-d"></p>
+        </div>
+        <p class="verdict" id="verdict"><span class="v-ico" aria-hidden="true"></span><span id="verdict-t"></span></p>
+        <p class="sr-only" id="live" aria-live="polite"></p>
+      </section>
 
-  <div class="kmpost" aria-hidden="true"><span>KM</span><b id="km-n">0</b><small>/11</small></div>
-  <p class="sr-only" id="km-live" aria-live="polite"></p>
+      <section class="card card-wide" aria-labelledby="wf-h">
+        <div class="card-head">
+          <div>
+            <h2 id="wf-h">De onde vem o reajuste</h2>
+            <p class="card-sub">Cada bloco de premissas aplicado em sequência. Laranja aumenta o reajuste; azul reduz.</p>
+          </div>
+          <div class="seg-ctl" id="wf-from" role="group" aria-label="Ponto de partida da ponte">
+            <button type="button" data-from="original">Desde a planilha original</button>
+            <button type="button" data-from="grupo">Desde o grupo</button>
+          </div>
+        </div>
+        <div class="chart" id="c-wf"></div>
+      </section>
 
-  <div class="drive" role="group" aria-label="Navegação">
-    <button type="button" class="drive-btn" data-dir="-1" aria-label="Voltar">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
-    </button>
-    <span class="drive-steps" aria-hidden="true"></span>
-    <button type="button" class="drive-btn" data-dir="1" aria-label="Avançar">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
-    </button>
+      <div class="duo">
+        <section class="card" aria-labelledby="sens-h">
+          <div class="card-head">
+            <div>
+              <h2 id="sens-h">Quanto a severidade pesa</h2>
+              <p class="card-sub">Reajuste para cada severidade projetada, com o resto do cenário fixo. Clique na curva para aplicar.</p>
+            </div>
+          </div>
+          <div class="chart" id="c-sens"></div>
+        </section>
+        <section class="card" aria-labelledby="lr-h">
+          <div class="card-head">
+            <div>
+              <h2 id="lr-h">Sinistralidade projetada por ano</h2>
+              <p class="card-sub">Quando a média fica na linha laranja, o reajuste é zero.</p>
+            </div>
+          </div>
+          <div class="chart" id="c-lr"></div>
+          <details class="table-view">
+            <summary>Ver tabela</summary>
+            <table id="lr-table">
+              <thead><tr><th scope="col">Ano</th><th scope="col">Prêmio projetado (US$)</th><th scope="col">Sinistro projetado (US$)</th><th scope="col">Sinistralidade</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </details>
+        </section>
+      </div>
+
+      <section class="card card-wide" aria-labelledby="comp-h">
+        <div class="card-head">
+          <div>
+            <h2 id="comp-h">Para onde vai o prêmio de cada veículo</h2>
+            <p class="card-sub">Mesmos custos projetados, três decisões de preço. O que sobra é o lucro.</p>
+          </div>
+          <ul class="legend" id="comp-legend"></ul>
+        </div>
+        <div class="chart" id="c-comp"></div>
+      </section>
+
+      <footer class="foot">
+        <p><b>Método.</b> Sinistralidade com prêmio à tarifa atual e sinistros desenvolvidos, tendenciados e com ULAE; reajuste = (sinistralidade + despesa fixa) ÷ (1 − despesa variável − lucro) − 1, ponderado pela credibilidade. O motor deste site reproduz a planilha do grupo célula a célula (120 conferências automáticas).</p>
+        <p><b>Premissas a confirmar.</b> A exposição é tratada como veículo-ano. A faixa de erro considera só a variação do número de sinistros (1,645 ÷ √n), não a incerteza das premissas.</p>
+        <p class="foot-sig">Estudo de caso CAS · EAC0465 Matemática Atuarial Não Vida I · FEA-USP · 2026</p>
+      </footer>
+    </main>
   </div>
+
+  </div>
+
+  <div class="dock" aria-hidden="true"><span>Reajuste</span><b id="d-cw"></b><span id="d-p"></span></div>
 
   <script type="module" src="/src/main.js"></script>
 </body>

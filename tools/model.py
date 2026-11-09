@@ -68,10 +68,16 @@ BASE = dict(
     latest_indication=0.132,
 )
 
+# Cenário do grupo: valores exatos da planilha "Estudo de Caso - Grupo COMPLETO com resumos.xlsx"
+# (LDF = média de todos os anos; despesas = média ponderada; ULAE = média ponderada de 3 anos)
 FINAL = copy.deepcopy(BASE)
 FINAL.update(gen_exp=[39143368, 39940978, 40763160], rate_changes=[-0.03, 0.10, 0.07, -0.02, 0.07, 0.05],
-             prem_trend=0.0135, ldf_sel=[1.0703, 1.0279, 1.0113, 0.9898, 1.0], sev=(0.005, 0.02),
-             exp_sel=dict(gen=0.083, acq=0.0825, lic=0.002, com=0.112, tax=0.042))
+             prem_trend=0.0135,
+             ldf_sel=[1.0703439936468777, 1.0380030065235797, 1.0112573795081794, 0.9897849582219368, 1.0],
+             sev=(0.005, 0.02),
+             exp_sel=dict(gen=0.08340831904214963, acq=0.08254782227763663, lic=0.00234256146001567,
+                          com=0.11233182062385542, tax=0.041578111408699055),
+             ulae_sel=0.143400499759598)
 
 def run(p):
     out = {}

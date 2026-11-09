@@ -18,7 +18,7 @@ Vite + JavaScript puro + GSAP (decisão de Pedro em 06/11/2026). Repositório p�
 
 ## Product Purpose
 
-Apresentar a solução do estudo de caso "Seguro de Automóveis" da Casualty Actuarial Society (CAS): a indicação de mudança de taxa de uma carteira de Responsabilidade Civil de Danos Materiais (Private Passenger Auto PD Liability) da seguradora fictícia CAS Rocks Insurance. Sucesso: a plateia entende a resposta (reajuste de −0,5%) e o raciocínio por trás dela, e percebe domínio técnico e esforço acima do esperado.
+Apresentar a solução do estudo de caso "Seguro de Automóveis" da Casualty Actuarial Society (CAS): a indicação de mudança de taxa de uma carteira de Responsabilidade Civil de Danos Materiais (Private Passenger Auto PD Liability) da seguradora fictícia CAS Rocks Insurance. Sucesso: a plateia entende a resposta (indicação de −0,05%: manter a tarifa) e o raciocínio por trás dela; depois da apresentação, o site é a extensão interativa para testar cenários, e percebe domínio técnico e esforço acima do esperado.
 
 ## Positioning
 
@@ -33,7 +33,7 @@ O grupo não só reproduz o resultado do professor (−6,2%): corrige os erros a
 
 ## Capabilities and Constraints
 
-- Conteúdo numérico vem exclusivamente da solução auditada (`../Solucao - Estudo de Caso Auto.xlsx` e `../Plano do Grupo e Solucao - Estudo de Caso Auto.pdf`); recalcular pelo modelo, nunca digitar números à mão.
+- Conteúdo numérico vem exclusivamente da planilha do grupo (`../Pessoa 6 - Arquivos/Estudo de Caso - Grupo COMPLETO com resumos.xlsx`), reproduzida por `tools/model.py`; recalcular pelo modelo, nunca digitar números à mão.
 - Recalcular a indicação ao vivo a partir das premissas (severidade, credibilidade, despesas, tendência de prêmio) usando as mesmas fórmulas da planilha.
 - Idioma: português. Termos técnicos em inglês aparecem com tradução na primeira menção.
 - A Allianz é a plateia, não a empresa do caso: não usar logo nem identidade visual da Allianz como se o material fosse dela.
@@ -45,14 +45,14 @@ Caso da CAS por Christian Coleianne, Alisa Havens Walch e Mark Priven. Grupo de 
 
 ## Evidence on Hand
 
-- Resultados auditados: base reproduz o slide do professor (sinistralidade 61,9%, despesa fixa 11,3%, variável 17,0%, reajuste −6,2%); recomendação final (62,5%, 12,6%, 19,5%, −0,5%); prêmio médio por veículo US$ 120,15 → US$ 119,55.
-- Ponte −6,2% → −0,5%, sensibilidades de cada pergunta do Guia, robustez (severidade 1,5% → −1,4%; 2,5% → +0,4%).
+- Resultados auditados: base reproduz o slide do professor (sinistralidade 61,9%, despesa fixa 11,3%, variável 17,0%, reajuste −6,2%); cenário do grupo (sinistralidade 62,74%, despesa fixa 12,68%, variável 19,54%, indicação −0,05%, credibilidade 100%); prêmio médio por veículo US$ 120,15 → US$ 120,09. Recomendação: manter a tarifa (margem 5,04%).
+- Ponte −6,2% → −0,05% (despesas gerais +2,7; outras aquisições −0,3; impostos +2,6; reajustes e tendência −0,4; sinistros e ULAE +0,6; severidade +0,9), robustez (severidade 1,5% → −1,0%; 2,5% → +0,9%), erro estatístico ±2,3 p.p.
 - Dois bugs de idioma: DATEVALUE("7/1/2015") lido como 7 de janeiro (período 2,7333 em vez de 2,25) e TEXT(...,"yyyy") exibindo "yyyy".
 - Não existem: depoimentos, dados reais da Allianz, fotos do grupo. Não inventar.
 
 ## Product Principles
 
-1. A resposta primeiro: −0,5% e o prêmio novo aparecem antes do método.
+1. A resposta primeiro: −0,05% (manter a tarifa) e o prêmio por veículo aparecem antes do método.
 2. Todo número é rastreável até uma célula da planilha.
 3. Interação serve para provar o raciocínio, não para enfeitar.
 4. Leitura crítica é parte do resultado: mostrar o que estava errado e como foi corrigido.
