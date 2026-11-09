@@ -284,14 +284,14 @@ function render() {
 
   // estado no endereço
   const hash = isGroup ? '' : '#c=' + btoa(encodeURIComponent(JSON.stringify(P)));
-  if (location.hash !== hash) history.replaceState(null, '', hash || location.pathname + location.search);
+  if (location.hash !== hash && (hash || location.hash.startsWith('#c='))) history.replaceState(null, '', hash || location.pathname + location.search);
 }
 
 $('#comp-legend').innerHTML = SEG.map(([k, n]) => `<li><i class="sw seg-${k}"></i>${n}</li>`).join('');
 render();
 initHero();
 let rw = 0;
-new ResizeObserver(() => { cancelAnimationFrame(rw); rw = requestAnimationFrame(render); }).observe($('#board'));
+new ResizeObserver(() => { cancelAnimationFrame(rw); rw = requestAnimationFrame(render); }).observe($('.app'));
 
 // entrada dos cartões: cada gráfico se desenha uma vez quando aparece na tela
 const io = new IntersectionObserver((es) => es.forEach((e) => {

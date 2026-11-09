@@ -4,7 +4,7 @@ import { pct, usd, num } from './fmt.js';
 
 const tip = document.createElement('div');
 tip.className = 'tip';
-tip.setAttribute('role', 'status');
+tip.setAttribute('aria-hidden', 'true');
 tip.hidden = true;
 document.body.append(tip);
 
@@ -20,6 +20,7 @@ export const hideTip = () => { tip.hidden = true; };
 
 const ppTxt = (d) => {
   const v = d * 100;
+  if (Math.abs(v) < 0.005) return '0 p.p.';
   const dec = Math.abs(v) < 0.095 ? 2 : 1;
   return (v < -0.0005 ? '−' : '+') + Math.abs(v).toFixed(dec).replace('.', ',') + ' p.p.';
 };
@@ -31,8 +32,26 @@ function niceStep(span, target) {
   return [1, 2, 2.5, 5, 10].map((k) => k * p).find((s) => s >= raw);
 }
 
+const plain = (h) => h.replace(/<span class="muted">clique para aplicar<\/span>/, '').replace(/<[^>]+>/g, '. ').replace(/(\.\s*)+/g, '. ').replace(/^\. |\. $/g, '');
 function bindHover(root, sel, html) {
-  root.querySelectorAll(sel).forEach((el) => {
+  const els = [...root.querySelectorAll(sel)];
+  // uma parada de Tab por gráfico; setas, Home e End andam entre os elementos
+  els.forEach((el, i) => {
+    el.setAttribute('tabindex', i ? '-1' : '0');
+    el.setAttribute('role', 'img');
+    el.setAttribute('aria-label', plain(html(el)));
+    el.addEventListener('keydown', (e) => {
+      const k = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      let j = k ? i + k : e.key === 'Home' ? 0 : e.key === 'End' ? els.length - 1 : null;
+      if (j === null) return;
+      e.preventDefault();
+      j = (j + els.length) % els.length;
+      el.setAttribute('tabindex', '-1');
+      els[j].setAttribute('tabindex', '0');
+      els[j].focus();
+    });
+  });
+  els.forEach((el) => {
     const show = (e) => {
       const r = el.getBoundingClientRect();
       const x = e.clientX ?? r.left + r.width / 2;
@@ -71,7 +90,7 @@ export function waterfall(el, steps) {
   const y = (v) => m.t + ((hi - v) / (hi - lo)) * ih;
   const band = iw / bars.length;
   const bw = Math.min(72, band * 0.58);
-  let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Ponte do reajuste: ${bars.map((b) => `${b.label} ${b.kind.startsWith('total') ? pct(b.y1, 2) : ppTxt(b.d)}`).join('; ')}">`;
+  let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="group" aria-label="Ponte do reajuste: ${bars.map((b) => `${b.label} ${b.kind.startsWith('total') ? pct(b.y1, 2) : ppTxt(b.d)}`).join('; ')}">`;
   s += `<line class="axis-zero" x1="${m.l}" x2="${w - m.r}" y1="${y(0)}" y2="${y(0)}"/>`;
   bars.forEach((b, i) => {
     const cx = m.l + band * i + band / 2;
@@ -117,7 +136,7 @@ export function sensitivity(el, { pts, cur, band, fits, onPick }) {
   const X = (v) => m.l + ((v - x0) / (x1 - x0)) * iw;
   const Y = (v) => m.t + ((hi - v) / (hi - lo)) * ih;
   const st = niceStep(hi - lo, 5);
-  let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Reajuste conforme a severidade projetada; cenário atual ${pct(cur.x, 1)} gera ${pct(cur.y, 2)}">`;
+  let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="group" aria-label="Reajuste conforme a severidade projetada; cenário atual ${pct(cur.x, 1)} gera ${pct(cur.y, 2)}">`;
   for (let v = Math.ceil(lo / st) * st; v <= hi; v += st) {
     s += `<line class="grid" x1="${m.l}" x2="${w - m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ylab" x="${m.l - 8}" y="${Y(v) + 4}" text-anchor="end">${pct(v, 0, { sign: true })}</text>`;
   }
@@ -169,7 +188,7 @@ export function lossRatios(el, { years, lr, avg, even, prem, loss }) {
   const Y = (v) => m.t + ((hi - v) / (hi - lo)) * ih;
   const band = iw / years.length;
   const st = niceStep(hi - lo, 4);
-  let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Sinistralidade projetada por ano: ${years.map((yv, i) => `${yv} ${pct(lr[i])}`).join(', ')}; média ${pct(avg)}; ponto que zera o reajuste ${pct(even)}">`;
+  let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="group" aria-label="Sinistralidade projetada por ano: ${years.map((yv, i) => `${yv} ${pct(lr[i])}`).join(', ')}; média ${pct(avg)}; ponto que zera o reajuste ${pct(even)}">`;
   for (let v = Math.ceil(lo / st) * st; v <= hi; v += st) {
     s += `<line class="grid" x1="${m.l}" x2="${w - m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text class="ylab" x="${m.l - 8}" y="${Y(v) + 4}" text-anchor="end">${pct(v, 0)}</text>`;
   }
@@ -210,7 +229,7 @@ export function composition(el, rows) {
   const iw = w - m.l - m.r;
   const max = Math.max(...rows.map((r) => Math.max(r.prem, r.sin + r.fix + r.var))) * 1.0;
   const X = (v) => (v / max) * iw;
-  let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${rows.map((r) => `${r.label}: prêmio ${usd(r.prem)}, lucro ${usd(r.luc)}`).join('; ')}">`;
+  let s = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="group" aria-label="${rows.map((r) => `${r.label}: prêmio ${usd(r.prem)}, lucro ${usd(r.luc)}`).join('; ')}">`;
   rows.forEach((r, i) => {
     const top = i * rowH;
     const by = top + 26, bh = 34;
