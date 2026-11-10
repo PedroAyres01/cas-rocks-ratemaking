@@ -69,11 +69,11 @@ BASE = dict(
 )
 
 # Cenário do grupo: valores exatos da planilha "Estudo de Caso - Grupo COMPLETO com resumos.xlsx"
-# (LDF = média de todos os anos; despesas = média ponderada; ULAE = média ponderada de 3 anos)
+# (LDF = média geométrica, confirmada pelo Kaue em 09/11; despesas = média ponderada; ULAE = média ponderada de 3 anos)
 FINAL = copy.deepcopy(BASE)
 FINAL.update(gen_exp=[39143368, 39940978, 40763160], rate_changes=[-0.03, 0.10, 0.07, -0.02, 0.07, 0.05],
              prem_trend=0.0135,
-             ldf_sel=[1.0703439936468777, 1.0380030065235797, 1.0112573795081794, 0.9897849582219368, 1.0],
+             ldf_sel=[1.0698698731758236, 1.03708614609745, 1.011097674094537, 0.9895932768303585, 1.0],
              sev=(0.005, 0.02),
              exp_sel=dict(gen=0.08340831904214963, acq=0.08254782227763663, lic=0.00234256146001567,
                           com=0.11233182062385542, tax=0.041578111408699055),
